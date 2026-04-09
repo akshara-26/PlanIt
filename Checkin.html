@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Check-Ins | PlanIt</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.84);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --success: #58a978;
+      --danger: #da6f90;
+      --warning: #f2b35f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 48%, #f6fff7 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1450px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 320px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .page-title,
+    .today-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .page-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .page-title p,
+    .today-card p,
+    .helper-text,
+    .question-note,
+    .memory-note,
+    .empty-state,
+    .small-note,
+    .history-item p,
+    .modal-box p,
+    .field label {
+      color: var(--text-soft);
+    }
+
+    .today-card {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .today-date {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #3f5b87;
+      margin-top: 6px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #39517c;
+    }
+
+    .helper-text,
+    .small-note {
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .field textarea,
+    .field input,
+    .answer-input,
+    .answer-select {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      resize: vertical;
+      width: 100%;
+    }
+
+    .field textarea {
+      min-height: 110px;
+    }
+
+    .field textarea:focus,
+    .field input:focus,
+    .answer-input:focus,
+    .answer-select:focus {
+      outline-color: rgba(115, 136, 171, 0.24);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .question-card:hover,
+    .history-item:hover {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, var(--blue-2), var(--green-1));
+    }
+
+    .success-btn {
+      background: linear-gradient(135deg, #dcf8e6, #edfdf3);
+      color: #2f7e53;
+    }
+
+    .warning-btn {
+      background: linear-gradient(135deg, #fff0da, #fff9ef);
+      color: #a36b20;
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ffe0ea, #fff1f5);
+      color: #a14a69;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.62), rgba(216, 246, 222, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #39517b;
+      margin-bottom: 4px;
+    }
+
+    .questions-list,
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .question-card,
+    .history-item {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .question-card h3,
+    .history-item h3 {
+      font-size: 1.06rem;
+      color: #38517d;
+      margin-bottom: 10px;
+    }
+
+    .question-note,
+    .memory-note {
+      font-size: 0.92rem;
+      margin-top: 8px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.6);
+      font-weight: 700;
+    }
+
+    .memory-box {
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.52), rgba(235, 248, 255, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      margin-top: 10px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(49, 66, 103, 0.26);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(560px, 100%);
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(233,247,255,0.92));
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .modal-box h3 {
+      margin-bottom: 12px;
+      color: #39517c;
+      font-size: 1.3rem;
+    }
+
+    .cheer-memory {
+      margin: 16px 0;
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(216,246,222,0.82), rgba(235,248,255,0.9));
+      color: var(--text);
+      font-weight: 700;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 1180px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell {
+        width: min(100% - 20px, 900px);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card page-title">
+        <h1>Daily Check-Ins</h1>
+        <p>Answer a fresh set of questions each day, save a good memory, and revisit brighter moments when you need one.</p>
+      </div>
+
+      <div class="card today-card">
+        <p>Today’s check-in</p>
+        <div class="today-date" id="todayDate">Loading...</div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-column">
+        <section class="card panel">
+          <h2>Today’s Daily Check-In</h2>
+          <p class="helper-text">Each day, PlanIt picks at least 5 random questions from a larger list. Your answers are saved in this browser.</p>
+          <div id="questionsList" class="questions-list"></div>
+          <div class="button-row">
+            <button class="primary-btn" id="saveAnswersBtn">Save Today’s Answers</button>
+            <button class="secondary-btn" id="refreshQuestionsBtn">Pick New Questions For Today</button>
+          </div>
+          <p class="small-note">This demo uses 100 rotating questions and keeps one set of questions per day unless you refresh them.</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Good Memory of the Day</h2>
+          <p class="helper-text">Optional: save one happy memory from today. If you feel rough later, you can press the cheer-up button and get a random good memory from your saved collection.</p>
+          <div class="field">
+            <label for="memoryInput">Today’s good memory</label>
+            <textarea id="memoryInput" placeholder="Example: I laughed with my friends at lunch, or I finally understood algebra today."></textarea>
+          </div>
+          <div class="button-row">
+            <button class="success-btn" id="saveMemoryBtn">Save Good Memory</button>
+            <button class="warning-btn" id="cheerMeUpBtn">I’m Having a Rough Day</button>
+          </div>
+          <div class="memory-box">
+            <strong>Today’s saved memory</strong>
+            <p class="memory-note" id="todayMemoryText">No memory saved for today yet.</p>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h2>Check-In Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="savedDaysCount">0</strong>
+              <span>Saved check-in days</span>
+            </div>
+            <div class="stat-box">
+              <strong id="savedMemoriesCount">0</strong>
+              <span>Saved good memories</span>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section class="card panel">
+          <h2>Past Check-Ins</h2>
+          <div id="historyList" class="history-list"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="memoryModal" aria-hidden="true">
+    <div class="modal-box">
+      <h3>A Good Memory for You</h3>
+      <p>Here is one of your saved good moments.</p>
+      <div class="cheer-memory" id="cheerMemoryText"></div>
+      <div class="button-row" style="justify-content:center;">
+        <button class="primary-btn" id="anotherMemoryBtn">Show Another One</button>
+        <button class="secondary-btn" id="closeMemoryModalBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_daily_checkins_data';
+    const QUESTION_POOL = [
+      'How are you feeling today?',
+      'How much sleep did you get last night?',
+      'How much water did you drink today?',
+      'Did you eat breakfast today?',
+      'What is one thing you are proud of today?',
+      'What stressed you out the most today?',
+      'What made you smile today?',
+      'How focused did you feel during class today?',
+      'How much screen time did you have outside schoolwork?',
+      'Did you move your body or exercise today?',
+      'How motivated did you feel today?',
+      'What subject felt easiest today?',
+      'What subject felt hardest today?',
+      'Did you ask for help when you needed it today?',
+      'Did you take any breaks while studying?',
+      'How kind were you to yourself today?',
+      'Did you feel included today?',
+      'What is one thing you learned today?',
+      'What distracted you most today?',
+      'How organized did you feel today?',
+      'Did you procrastinate today?',
+      'How many hours did you study today?',
+      'Did you finish your homework today?',
+      'What is one thing you want to improve tomorrow?',
+      'How calm did you feel today?',
+      'Did you spend time with friends today?',
+      'Did you feel overwhelmed today?',
+      'How confident did you feel today?',
+      'Did you spend time outside today?',
+      'What was the best part of your day?',
+      'How was your energy level today?',
+      'Did you feel rushed today?',
+      'What is one thing you handled well today?',
+      'How much time did you spend reading today?',
+      'Did you feel prepared for your classes today?',
+      'How well did you manage your time today?',
+      'Did you have a healthy lunch today?',
+      'How social did you feel today?',
+      'Did you complete one important task today?',
+      'What challenge are you still thinking about?',
+      'How grateful did you feel today?',
+      'Did you laugh today?',
+      'How safe did you feel being yourself today?',
+      'What was your biggest win today?',
+      'Did you compare yourself to others today?',
+      'How much music did you listen to today?',
+      'Did you have enough quiet time today?',
+      'How patient were you today?',
+      'Did anything surprise you today?',
+      'How did your body feel today?',
+      'What helped you keep going today?',
+      'Did you get enough fresh air today?',
+      'How supported did you feel today?',
+      'Did you feel lonely today?',
+      'How well did you balance school and rest today?',
+      'What is one word for your day?',
+      'Did you do something creative today?',
+      'How prepared do you feel for tomorrow?',
+      'Did you stick to your planner today?',
+      'How anxious did you feel today?',
+      'Did you drink something besides water today?',
+      'Did you help someone today?',
+      'What do you wish you had more time for today?',
+      'How much homework do you still have left?',
+      'Did you feel pressured today?',
+      'What classroom moment stood out today?',
+      'Did you sleep at a good time yesterday?',
+      'How much effort did you give today?',
+      'Did you feel heard today?',
+      'What food gave you the most energy today?',
+      'Did you get frustrated today?',
+      'How many times did you check your phone today?',
+      'Did you tidy your space today?',
+      'How did you handle mistakes today?',
+      'What conversation mattered most today?',
+      'Did you take notes well today?',
+      'How much pressure are you under right now?',
+      'What do you need more of tomorrow?',
+      'Did you say something kind today?',
+      'How good was your concentration today?',
+      'Did you feel bored today?',
+      'What part of today felt peaceful?',
+      'How did you manage difficult emotions today?',
+      'Did you finish what you planned to do today?',
+      'What are you looking forward to tomorrow?',
+      'Did you remember to breathe and pause today?',
+      'How much caffeine or sugary drinks did you have today?',
+      'Did you feel proud of your effort today?',
+      'What would make tomorrow easier?',
+      'Did you feel respected today?',
+      'How much time did you waste today?',
+      'What habit helped you most today?',
+      'Did you believe in yourself today?',
+      'How much alone time did you need today?',
+      'Did you feel like you belonged today?',
+      'What challenged your patience today?',
+      'How well did you communicate today?',
+      'Did you notice anything beautiful today?',
+      'What is something small that went right today?',
+      'How balanced did your meals feel today?',
+      'Did you show up for yourself today?',
+      'What do you want to remember about today?'
+    ];
+
+    const todayDate = document.getElementById('todayDate');
+    const questionsList = document.getElementById('questionsList');
+    const saveAnswersBtn = document.getElementById('saveAnswersBtn');
+    const refreshQuestionsBtn = document.getElementById('refreshQuestionsBtn');
+    const memoryInput = document.getElementById('memoryInput');
+    const saveMemoryBtn = document.getElementById('saveMemoryBtn');
+    const cheerMeUpBtn = document.getElementById('cheerMeUpBtn');
+    const todayMemoryText = document.getElementById('todayMemoryText');
+    const savedDaysCount = document.getElementById('savedDaysCount');
+    const savedMemoriesCount = document.getElementById('savedMemoriesCount');
+    const historyList = document.getElementById('historyList');
+    const memoryModal = document.getElementById('memoryModal');
+    const cheerMemoryText = document.getElementById('cheerMemoryText');
+    const anotherMemoryBtn = document.getElementById('anotherMemoryBtn');
+    const closeMemoryModalBtn = document.getElementById('closeMemoryModalBtn');
+
+    let appData = loadData();
+
+    function getTodayKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getReadableDate(dateString = getTodayKey()) {
+      const date = new Date(`${dateString}T00:00:00`);
+      return date.toLocaleDateString([], {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function loadData() {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved) return saved;
+      return {
+        dailyEntries: {},
+        goodMemories: []
+      };
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function shuffleArray(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function ensureTodayEntry() {
+      const today = getTodayKey();
+      if (!appData.dailyEntries[today]) {
+        const randomQuestions = shuffleArray(QUESTION_POOL).slice(0, 5);
+        appData.dailyEntries[today] = {
+          questions: randomQuestions,
+          answers: {},
+          memory: ''
+        };
+        saveData();
+      }
+    }
+
+    function renderTodayQuestions() {
+      const today = getTodayKey();
+      const entry = appData.dailyEntries[today];
+
+      questionsList.innerHTML = entry.questions.map((question, index) => {
+        const safeValue = entry.answers[question] || '';
+        return `
+          <article class="question-card">
+            <h3>${index + 1}. ${escapeHtml(question)}</h3>
+            <input class="answer-input" data-question="${encodeURIComponent(question)}" type="text" placeholder="Write your answer here..." value="${escapeHtml(safeValue)}" />
+            <p class="question-note">Your answer saves when you click “Save Today’s Answers.”</p>
+          </article>
+        `;
+      }).join('');
+
+      todayMemoryText.textContent = entry.memory || 'No memory saved for today yet.';
+      memoryInput.value = entry.memory || '';
+    }
+
+    function saveTodayAnswers() {
+      const today = getTodayKey();
+      const entry = appData.dailyEntries[today];
+      const answerInputs = document.querySelectorAll('.answer-input');
+
+      answerInputs.forEach((input) => {
+        const question = decodeURIComponent(input.dataset.question);
+        entry.answers[question] = input.value.trim();
+      });
+
+      saveData();
+      renderHistory();
+      updateStats();
+      alert('Today\'s check-in answers have been saved.');
+    }
+
+    function refreshTodayQuestions() {
+      const confirmed = confirm('Pick a new set of 5 random questions for today? This will replace today\'s current questions and answers.');
+      if (!confirmed) return;
+
+      const today = getTodayKey();
+      appData.dailyEntries[today] = {
+        questions: shuffleArray(QUESTION_POOL).slice(0, 5),
+        answers: {},
+        memory: appData.dailyEntries[today]?.memory || ''
+      };
+      saveData();
+      renderTodayQuestions();
+      renderHistory();
+      updateStats();
+    }
+
+    function saveTodayMemory() {
+      const today = getTodayKey();
+      const memory = memoryInput.value.trim();
+      appData.dailyEntries[today].memory = memory;
+
+      if (memory) {
+        const alreadyExists = appData.goodMemories.some((item) => item.date === today && item.text === memory);
+        if (!alreadyExists) {
+          appData.goodMemories.unshift({
+            id: crypto.randomUUID(),
+            date: today,
+            text: memory
+          });
+        }
+      }
+
+      saveData();
+      todayMemoryText.textContent = memory || 'No memory saved for today yet.';
+      renderHistory();
+      updateStats();
+      alert(memory ? 'Good memory saved.' : 'Today\'s memory was cleared.');
+    }
+
+    function openMemoryModal() {
+      if (!appData.goodMemories.length) {
+        alert('You have no saved good memories yet. Save one first so PlanIt can cheer you up later.');
+        return;
+      }
+      showRandomMemory();
+      memoryModal.classList.add('show');
+      memoryModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeMemoryModal() {
+      memoryModal.classList.remove('show');
+      memoryModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function showRandomMemory() {
+      const randomMemory = appData.goodMemories[Math.floor(Math.random() * appData.goodMemories.length)];
+      cheerMemoryText.textContent = `${randomMemory.text} (${getReadableDate(randomMemory.date)})`;
+    }
+
+    function renderHistory() {
+      const entries = Object.entries(appData.dailyEntries)
+        .sort((a, b) => b[0].localeCompare(a[0]));
+
+      if (!entries.length) {
+        historyList.innerHTML = '<div class="empty-state">No saved check-ins yet.</div>';
+        return;
+      }
+
+      historyList.innerHTML = entries.map(([date, entry]) => {
+        const answeredCount = Object.values(entry.answers).filter((answer) => answer && answer.trim() !== '').length;
+        const answerBlocks = entry.questions.map((question) => `
+          <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(115,136,171,0.12);">
+            <strong>${escapeHtml(question)}</strong>
+            <p>${escapeHtml(entry.answers[question] || 'No answer saved.')}</p>
+          </div>
+        `).join('');
+
+        return `
+          <article class="history-item">
+            <h3>${getReadableDate(date)}</h3>
+            <p><strong>Answered:</strong> ${answeredCount} / ${entry.questions.length}</p>
+            <p><strong>Good memory:</strong> ${escapeHtml(entry.memory || 'No memory saved for this day.')}</p>
+            ${answerBlocks}
+          </article>
+        `;
+      }).join('');
+    }
+
+    function updateStats() {
+      savedDaysCount.textContent = String(Object.keys(appData.dailyEntries).length);
+      savedMemoriesCount.textContent = String(appData.goodMemories.length);
+      todayDate.textContent = getReadableDate();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    saveAnswersBtn.addEventListener('click', saveTodayAnswers);
+    refreshQuestionsBtn.addEventListener('click', refreshTodayQuestions);
+    saveMemoryBtn.addEventListener('click', saveTodayMemory);
+    cheerMeUpBtn.addEventListener('click', openMemoryModal);
+    anotherMemoryBtn.addEventListener('click', showRandomMemory);
+    closeMemoryModalBtn.addEventListener('click', closeMemoryModal);
+
+    memoryModal.addEventListener('click', (event) => {
+      if (event.target === memoryModal) closeMemoryModal();
+    });
+
+    ensureTodayEntry();
+    renderTodayQuestions();
+    renderHistory();
+    updateStats();
+  </script>
+</body>
+</html>
+
+    

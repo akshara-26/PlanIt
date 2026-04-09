@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Hub | PlanIt</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdbe8;
+      --blue-1: #e9f7ff;
+      --blue-2: #cfeeff;
+      --green-1: #edfff1;
+      --green-2: #d5f7dd;
+      --lavender: #f3ecff;
+      --text: #314267;
+      --text-soft: #5b6b8a;
+      --white-glass: rgba(255, 255, 255, 0.82);
+      --border: 2px solid rgba(114, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --danger: #d96b8d;
+      --success: #55a779;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5f9 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef9ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff8fb 0%, #f2fbff 48%, #f7fff8 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1450px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 260px 1fr;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .top-card,
+    .panel,
+    .post-card,
+    .comment-card,
+    .side-card,
+    .modal-box {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .top-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: clamp(0.9rem, 1.5vw, 1.35rem);
+      text-align: center;
+      padding: 16px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .top-card.home {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .top-card.back {
+      background: linear-gradient(135deg, var(--blue-2), var(--green-1));
+    }
+
+    .top-card:hover,
+    .top-card:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 34px rgba(124, 147, 184, 0.22);
+      outline: none;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.84), rgba(234,247,255,0.92));
+    }
+
+    .search-wrap label {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      white-space: nowrap;
+      font-size: 1rem;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      border: none;
+      background: rgba(255,255,255,0.76);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      color: var(--text);
+      outline: 2px solid transparent;
+      transition: outline-color 0.2s ease;
+    }
+
+    .search-wrap input:focus {
+      outline-color: rgba(112, 142, 189, 0.28);
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 0.85fr;
+      gap: 22px;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .hero-panel {
+      background: linear-gradient(135deg, rgba(255, 219, 232, 0.82), rgba(233, 247, 255, 0.92), rgba(213, 247, 221, 0.88));
+    }
+
+    .hero-panel h1 {
+      font-size: clamp(2rem, 3vw, 3rem);
+      margin-bottom: 10px;
+      color: #344670;
+    }
+
+    .hero-panel p {
+      color: var(--text-soft);
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .guidelines {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .guide-box {
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(114, 136, 171, 0.12);
+    }
+
+    .guide-box h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #3e5680;
+    }
+
+    .guide-box ul {
+      padding-left: 18px;
+      color: var(--text-soft);
+    }
+
+    .guide-box li + li {
+      margin-top: 6px;
+    }
+
+    .composer {
+      background: linear-gradient(180deg, rgba(233,247,255,0.85), rgba(255,255,255,0.9));
+    }
+
+    .composer h2,
+    .forum-section h2,
+    .comments-section h2,
+    .side-card h2 {
+      font-size: 1.35rem;
+      margin-bottom: 14px;
+      color: #38517e;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 800;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 14px;
+      background: rgba(255,255,255,0.9);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      resize: vertical;
+      min-height: 54px;
+    }
+
+    .field textarea {
+      min-height: 130px;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline-color: rgba(114, 136, 171, 0.24);
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.98rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      box-shadow: var(--shadow);
+    }
+
+    button:hover,
+    button:focus-visible {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, var(--green-2), var(--blue-1));
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ffd9e5, #ffeef3);
+      color: #9f4060;
+    }
+
+    .post-list,
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .post-card,
+    .comment-card {
+      padding: 18px;
+      background: rgba(255,255,255,0.84);
+    }
+
+    .post-top,
+    .comment-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink-1), var(--blue-1));
+      color: #486188;
+      font-size: 0.83rem;
+      font-weight: 800;
+    }
+
+    .post-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #374d79;
+    }
+
+    .meta {
+      color: #6d7b98;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .post-body,
+    .comment-body {
+      color: var(--text-soft);
+      margin-bottom: 14px;
+      white-space: pre-wrap;
+    }
+
+    .uploaded-preview {
+      max-width: 220px;
+      width: 100%;
+      border-radius: 18px;
+      margin: 10px 0 14px;
+      display: block;
+      box-shadow: 0 10px 20px rgba(124, 147, 184, 0.12);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .mini-btn {
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      border-radius: 14px;
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .side-card {
+      padding: 22px;
+    }
+
+    .side-card p,
+    .side-card li {
+      color: var(--text-soft);
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+    }
+
+    .side-card li + li {
+      margin-top: 8px;
+    }
+
+    .group-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .group-item {
+      background: linear-gradient(135deg, rgba(255, 219, 232, 0.56), rgba(233, 247, 255, 0.82));
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid rgba(114, 136, 171, 0.12);
+    }
+
+    .group-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #3a547f;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 18px;
+      color: #76829c;
+      font-weight: 700;
+      background: rgba(255,255,255,0.6);
+      border-radius: 18px;
+    }
+
+    .site-note {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #6a7892;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(49, 66, 103, 0.26);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(560px, 100%);
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(233,247,255,0.92));
+    }
+
+    .modal-box h3 {
+      margin-bottom: 12px;
+      color: #39517c;
+      font-size: 1.25rem;
+    }
+
+    .modal-box p {
+      color: var(--text-soft);
+      margin-bottom: 14px;
+    }
+
+    .tiny {
+      font-size: 0.84rem;
+      color: #75819b;
+    }
+
+    @media (max-width: 1100px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid,
+      .guidelines {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="top-card home" href="Index.html" aria-label="Go to home page">Home</a>
+      <a class="top-card back" href="Index.html" aria-label="Back to menu page">Back to Menu Page</a>
+
+      <div class="top-card search-wrap" role="search">
+        <label for="searchInput">Search The Hub</label>
+        <input id="searchInput" type="text" placeholder="Search problems, tags, usernames, or keywords..." />
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <section class="left-column">
+        <section class="panel hero-panel">
+          <h1>The Hub</h1>
+          <p>
+            A calm, anonymous student forum inside PlanIt where students can ask for help, share school or personal worries,
+            and support others in their grade.
+          </p>
+          <p>
+            Students post under random names. Teachers can monitor for safety and report conduct issues, but they do not join the discussions.
+          </p>
+
+          <div class="guidelines">
+            <div class="guide-box">
+              <h3>Posting Guidelines</h3>
+              <ul>
+                <li>Be kind and respectful.</li>
+                <li>No swearing, insults, threats, or bullying.</li>
+                <li>Do not reveal private personal information.</li>
+                <li>Ask for help clearly so others can respond well.</li>
+              </ul>
+            </div>
+            <div class="guide-box">
+              <h3>Important Note</h3>
+              <ul>
+                <li>This demo saves posts and comments in this browser only.</li>
+                <li>For many students at once, you would need a real backend and database.</li>
+                <li>Private groups are shown as a front-end demo section here.</li>
+                <li>Image uploads in this version stay in the current browser storage.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel composer">
+          <h2>Post a Problem</h2>
+          <div class="form-grid">
+            <div class="field">
+              <label for="postTitle">Title</label>
+              <input id="postTitle" type="text" placeholder="Example: I can't balance revision and homework" />
+            </div>
+
+            <div class="field">
+              <label for="postCategory">Category</label>
+              <select id="postCategory">
+                <option value="School">School</option>
+                <option value="Homework">Homework</option>
+                <option value="Study Stress">Study Stress</option>
+                <option value="Friendship">Friendship</option>
+                <option value="Time Management">Time Management</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="postGrade">Grade</label>
+              <select id="postGrade">
+                <option value="Grade 6">Grade 6</option>
+                <option value="Grade 7">Grade 7</option>
+                <option value="Grade 8">Grade 8</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="imageUpload">Optional Image</label>
+              <input id="imageUpload" type="file" accept="image/*" />
+            </div>
+
+            <div class="field full-width">
+              <label for="postBody">Describe the problem</label>
+              <textarea id="postBody" placeholder="Write your problem here. Be clear, honest, and respectful."></textarea>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-btn" id="publishPostBtn">Publish Anonymously</button>
+            <button class="secondary-btn" id="createGroupBtn">Create Private Group</button>
+            <button class="danger-btn" id="clearAllBtn">Clear Demo Data</button>
+          </div>
+          <p class="site-note">Each new post gets a random anonymous name automatically.</p>
+        </section>
+
+        <section class="panel forum-section">
+          <h2>Student Posts</h2>
+          <div id="postList" class="post-list"></div>
+        </section>
+
+        <section class="panel comments-section">
+          <h2>Comments and Help</h2>
+          <div id="commentInfo" class="empty-state">Select a post and open its comments to reply.</div>
+          <div id="commentPanel" style="display:none; margin-top:16px;">
+            <div class="form-grid">
+              <div class="field full-width">
+                <label for="commentText">Add a comment</label>
+                <textarea id="commentText" placeholder="Offer advice, encouragement, or a helpful suggestion."></textarea>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="primary-btn" id="saveCommentBtn">Save Comment</button>
+            </div>
+            <div id="commentList" class="comment-list" style="margin-top:16px;"></div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="side-column">
+        <section class="side-card">
+          <h2>How this works</h2>
+          <ul>
+            <li>Students can post anonymously under random names.</li>
+            <li>Posts can be filtered with the search bar.</li>
+            <li>Comments are saved and stay after refresh on this device.</li>
+            <li>Teachers can monitor and report posts, but cannot reply here.</li>
+          </ul>
+        </section>
+
+        <section class="side-card">
+          <h2>Teacher Moderation</h2>
+          <p>Teachers do not speak in The Hub. They only monitor and report content that breaks conduct.</p>
+          <div class="group-list">
+            <div class="group-item">
+              <strong>Auto-flag examples</strong>
+              Swearing, insults, targeted harassment, threats, or unsafe personal details.
+            </div>
+            <div class="group-item">
+              <strong>Manual reports</strong>
+              Teachers can press a report button on any post if it breaks school rules.
+            </div>
+          </div>
+        </section>
+
+        <section class="side-card">
+          <h2>Private Groups / Chats</h2>
+          <p>This page includes a visual demo of private groups. Real live group chats need a backend for multiple students at once.</p>
+          <div id="groupList" class="group-list"></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <div class="modal" id="groupModal" aria-hidden="true">
+    <div class="modal-box">
+      <h3>Create a Private Group</h3>
+      <p>This demo lets you save private group names locally. Real group messaging between many students would need a server and database.</p>
+      <div class="field">
+        <label for="groupName">Group name</label>
+        <input id="groupName" type="text" placeholder="Example: Science Revision Squad" />
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label for="groupMembers">Member names</label>
+        <input id="groupMembers" type="text" placeholder="Example: Maya, Leo, Sana" />
+      </div>
+      <div class="button-row" style="margin-top:16px;">
+        <button class="primary-btn" id="saveGroupBtn">Save Group</button>
+        <button class="secondary-btn" id="closeGroupBtn">Close</button>
+      </div>
+      <p class="tiny" style="margin-top:12px;">This is a front-end placeholder only, not a real live chat system.</p>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY_POSTS = 'planit_hub_posts';
+    const STORAGE_KEY_GROUPS = 'planit_hub_groups';
+
+    const postTitle = document.getElementById('postTitle');
+    const postCategory = document.getElementById('postCategory');
+    const postGrade = document.getElementById('postGrade');
+    const postBody = document.getElementById('postBody');
+    const imageUpload = document.getElementById('imageUpload');
+    const publishPostBtn = document.getElementById('publishPostBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const postList = document.getElementById('postList');
+    const searchInput = document.getElementById('searchInput');
+    const commentInfo = document.getElementById('commentInfo');
+    const commentPanel = document.getElementById('commentPanel');
+    const commentText = document.getElementById('commentText');
+    const saveCommentBtn = document.getElementById('saveCommentBtn');
+    const commentList = document.getElementById('commentList');
+    const groupList = document.getElementById('groupList');
+    const createGroupBtn = document.getElementById('createGroupBtn');
+    const groupModal = document.getElementById('groupModal');
+    const groupName = document.getElementById('groupName');
+    const groupMembers = document.getElementById('groupMembers');
+    const saveGroupBtn = document.getElementById('saveGroupBtn');
+    const closeGroupBtn = document.getElementById('closeGroupBtn');
+
+    let posts = JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS)) || [];
+    let groups = JSON.parse(localStorage.getItem(STORAGE_KEY_GROUPS)) || [];
+    let selectedPostId = null;
+
+    const randomNames = [
+      'Quiet Comet', 'Blue Sparrow', 'Mint Orbit', 'Soft Thunder', 'Hidden Star', 'Calm Pebble',
+      'Silver Cloud', 'Pastel Fox', 'Gentle Wave', 'Sunny Pixel', 'Velvet Moon', 'Daisy Signal',
+      'Frosted Maple', 'Lilac Trail', 'North Lantern', 'Paper Kite', 'Dream Finch', 'Velvet Echo'
+    ];
+
+    function savePosts() {
+      localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(posts));
+    }
+
+    function saveGroups() {
+      localStorage.setItem(STORAGE_KEY_GROUPS, JSON.stringify(groups));
+    }
+
+    function getRandomName() {
+      const name = randomNames[Math.floor(Math.random() * randomNames.length)];
+      const number = Math.floor(Math.random() * 900 + 100);
+      return `${name} ${number}`;
+    }
+
+    function formatTime(timestamp) {
+      return new Date(timestamp).toLocaleString();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderPosts() {
+      const query = searchInput.value.trim().toLowerCase();
+      const filteredPosts = posts.filter((post) => {
+        const combined = `${post.title} ${post.body} ${post.category} ${post.grade} ${post.author}`.toLowerCase();
+        return combined.includes(query);
+      });
+
+      if (!filteredPosts.length) {
+        postList.innerHTML = '<div class="empty-state">No posts found yet. Be the first to ask for help.</div>';
+        return;
+      }
+
+      postList.innerHTML = filteredPosts.map((post) => `
+        <article class="post-card">
+          <div class="post-top">
+            <div>
+              <div class="post-title">${escapeHtml(post.title)}</div>
+              <div class="meta">Posted by ${escapeHtml(post.author)} • ${escapeHtml(post.grade)} • ${formatTime(post.createdAt)}</div>
+            </div>
+          </div>
+
+          <div class="chip-row">
+            <span class="chip">${escapeHtml(post.category)}</span>
+            <span class="chip">Anonymous</span>
+          </div>
+
+          <div class="post-body">${escapeHtml(post.body)}</div>
+
+          ${post.image ? `<img class="uploaded-preview" src="${post.image}" alt="Uploaded post image" />` : ''}
+
+          <div class="actions">
+            <button class="mini-btn primary-btn" onclick="openComments('${post.id}')">Open Comments (${post.comments.length})</button>
+            <button class="mini-btn secondary-btn" onclick="showSupport('${post.id}')">Send Support</button>
+            <button class="mini-btn danger-btn" onclick="reportPost('${post.id}')">Report</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderComments(postId) {
+      const post = posts.find((item) => item.id === postId);
+
+      if (!post) {
+        commentPanel.style.display = 'none';
+        commentInfo.style.display = 'block';
+        commentInfo.textContent = 'Select a post and open its comments to reply.';
+        return;
+      }
+
+      selectedPostId = postId;
+      commentInfo.style.display = 'block';
+      commentInfo.textContent = `Replying to: ${post.title}`;
+      commentPanel.style.display = 'block';
+
+      if (!post.comments.length) {
+        commentList.innerHTML = '<div class="empty-state">No comments yet. You can be the first to help.</div>';
+        return;
+      }
+
+      commentList.innerHTML = post.comments.map((comment) => `
+        <article class="comment-card">
+          <div class="comment-top">
+            <strong>${escapeHtml(comment.author)}</strong>
+            <span class="meta">${formatTime(comment.createdAt)}</span>
+          </div>
+          <div class="comment-body">${escapeHtml(comment.text)}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderGroups() {
+      if (!groups.length) {
+        groupList.innerHTML = '<div class="empty-state">No groups created yet.</div>';
+        return;
+      }
+
+      groupList.innerHTML = groups.map((group) => `
+        <div class="group-item">
+          <strong>${escapeHtml(group.name)}</strong>
+          Members: ${escapeHtml(group.members)}
+        </div>
+      `).join('');
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) {
+          resolve('');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function createPost() {
+      const title = postTitle.value.trim();
+      const body = postBody.value.trim();
+      const category = postCategory.value;
+      const grade = postGrade.value;
+      const file = imageUpload.files[0];
+
+      if (!title || !body) {
+        alert('Please add both a title and a description before publishing.');
+        return;
+      }
+
+      try {
+        const image = await readFileAsDataURL(file);
+        const newPost = {
+          id: crypto.randomUUID(),
+          title,
+          body,
+          category,
+          grade,
+          author: getRandomName(),
+          image,
+          createdAt: Date.now(),
+          comments: [],
+          supportCount: 0,
+          reported: false
+        };
+
+        posts.unshift(newPost);
+        savePosts();
+        renderPosts();
+
+        postTitle.value = '';
+        postBody.value = '';
+        imageUpload.value = '';
+
+        alert('Your post has been published anonymously.');
+      } catch (error) {
+        alert('The image could not be uploaded in this demo version.');
+      }
+    }
+
+    function saveComment() {
+      const text = commentText.value.trim();
+
+      if (!selectedPostId) {
+        alert('Please open a post before adding a comment.');
+        return;
+      }
+
+      if (!text) {
+        alert('Please write a comment first.');
+        return;
+      }
+
+      const post = posts.find((item) => item.id === selectedPostId);
+      if (!post) return;
+
+      post.comments.push({
+        id: crypto.randomUUID(),
+        author: getRandomName(),
+        text,
+        createdAt: Date.now()
+      });
+
+      savePosts();
+      commentText.value = '';
+      renderPosts();
+      renderComments(selectedPostId);
+    }
+
+    function openComments(postId) {
+      renderComments(postId);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function showSupport(postId) {
+      const post = posts.find((item) => item.id === postId);
+      if (!post) return;
+      post.supportCount += 1;
+      savePosts();
+      alert('Support sent. In a full version, this could show encouragement without revealing identity.');
+    }
+
+    function reportPost(postId) {
+      const post = posts.find((item) => item.id === postId);
+      if (!post) return;
+      post.reported = true;
+      savePosts();
+      alert('This post has been flagged for teacher review in the demo.');
+    }
+
+    function clearAllData() {
+      const confirmed = confirm('This will remove all demo posts, comments, and groups saved in this browser. Continue?');
+      if (!confirmed) return;
+
+      posts = [];
+      groups = [];
+      selectedPostId = null;
+      savePosts();
+      saveGroups();
+      renderPosts();
+      renderGroups();
+      renderComments(null);
+    }
+
+    function openGroupModal() {
+      groupModal.classList.add('show');
+      groupModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeGroupModal() {
+      groupModal.classList.remove('show');
+      groupModal.setAttribute('aria-hidden', 'true');
+      groupName.value = '';
+      groupMembers.value = '';
+    }
+
+    function createGroup() {
+      const name = groupName.value.trim();
+      const members = groupMembers.value.trim();
+
+      if (!name || !members) {
+        alert('Please add a group name and member names.');
+        return;
+      }
+
+      groups.unshift({ id: crypto.randomUUID(), name, members });
+      saveGroups();
+      renderGroups();
+      closeGroupModal();
+    }
+
+    publishPostBtn.addEventListener('click', createPost);
+    saveCommentBtn.addEventListener('click', saveComment);
+    searchInput.addEventListener('input', renderPosts);
+    clearAllBtn.addEventListener('click', clearAllData);
+    createGroupBtn.addEventListener('click', openGroupModal);
+    closeGroupBtn.addEventListener('click', closeGroupModal);
+    saveGroupBtn.addEventListener('click', createGroup);
+
+    groupModal.addEventListener('click', (event) => {
+      if (event.target === groupModal) closeGroupModal();
+    });
+
+    renderPosts();
+    renderGroups();
+  </script>
+</body>
+</html>
+
+
+
+ 
+

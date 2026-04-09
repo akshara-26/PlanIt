@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png">
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlanIt: You've never been this ready!</title>
+
+<style>
+:root {
+  --pink-1: #ffe3ec;
+  --pink-2: #ffcfe0;
+  --blue-1: #dff4ff;
+  --blue-2: #bfe7ff;
+  --green-1: #e3f8e8;
+  --green-2: #c8efd2;
+  --lavender: #efe7ff;
+  --text: #2f3552;
+  --text-soft: #56607a;
+  --white: rgba(255, 255, 255, 0.82);
+  --shadow: 0 12px 30px rgba(122, 146, 184, 0.18);
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --border: 2px solid rgba(112, 133, 168, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, #fff4f8 0%, transparent 30%),
+    radial-gradient(circle at top right, #eaf7ff 0%, transparent 35%),
+    linear-gradient(135deg, #fff7fb 0%, #f3fbff 45%, #f6fff9 100%);
+  min-height: 100vh;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+.page-shell {
+  width: min(1400px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 20px 0 40px;
+}
+
+.scroll-banner {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--pink-2), var(--blue-2), var(--green-2));
+  border: var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-left: 18px;
+}
+
+.banner-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 14px;
+}
+
+.scroll-track {
+  display: flex;
+  width: max-content;
+  animation: scrollText 20s linear infinite;
+  padding: 20px 0;
+}
+
+.scroll-track span {
+  font-size: clamp(1.8rem, 4vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #314267;
+  white-space: nowrap;
+  padding-right: 80px;
+}
+
+@keyframes scrollText {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.card {
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.intro-card {
+  min-height: 430px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.tagline {
+  display: inline-block;
+  background: rgba(255,255,255,0.72);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.intro-card h1 {
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1.15;
+  margin-bottom: 14px;
+  color: #32426a;
+}
+
+.intro-card p {
+  font-size: 1rem;
+  color: var(--text-soft);
+  margin-bottom: 12px;
+}
+
+.buttons-section {
+  grid-column: 2 / 5;
+}
+
+.buttons-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 16px;
+  height: 100%;
+}
+
+.nav-button {
+  border: none;
+  border-radius: 18px;
+  padding: 20px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+  color: #314267;
+  min-height: 92px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.4;
+  box-shadow: var(--shadow);
+}
+
+.images-bottom {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 4px;
+}
+
+.image-card {
+  overflow: hidden;
+  padding: 10px;
+}
+
+.image-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+.footer-note {
+  margin-top: 22px;
+  text-align: center;
+  color: #65718d;
+  font-size: 0.95rem;
+}
+</style>
+</head>
+
+<body>
+<div class="page-shell">
+
+<header class="scroll-banner">
+
+<img class="banner-logo" src="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png" alt="PlanIt Logo">
+
+<div class="scroll-track">
+<span>PlanIt: You've never been this ready!</span>
+<span>PlanIt: You've never been this ready!</span>
+<span>PlanIt: You've never been this ready!</span>
+<span>PlanIt: You've never been this ready!</span>
+</div>
+
+</header>
+
+<main class="main-grid">
+
+<section class="card intro-card">
+<div class="tagline">Your academic universe, simplified.</div>
+
+<h1>Welcome to PlanIt, the only study app you’ll ever need!</h1>
+
+<p>Get ready for the planner experience of a lifetime! Other planners may make you aware of your shortcomings, but <strong>PlanIt</strong> will help you do something about it.</p>
+
+<p>Whether you are trying to ace your 20 page essay, or learn how to juggle your social life and that upcoming test, nothing has ever felt this way since the first day of school.</p>
+
+<p>No more panic-planning until 3 AM; it’s a direct path from today’s to-do list all the way through graduation.</p>
+</section>
+
+<section class="buttons-section">
+<nav class="buttons-row">
+
+<button class="nav-button" data-link="Planner.html">Your Weekly planner: Resets on Sundays btw</button>
+<button class="nav-button" data-link="Checkin.html">Daily Check In (Be honest!)</button>
+<button class="nav-button" data-link="TheHub.html">The Hub: Chat around the world!</button>
+<button class="nav-button" data-link="Goal.html">Goals: Don't just set 'em and forget 'em!</button>
+<button class="nav-button" data-link="PlanItGarden.html">Study Gardens: The flowers grow if you study!</button>
+<button class="nav-button" data-link="ThePommeTracker.html">Pomme Mindfulness: The apples are calm. Be like the apples.</button>
+<button class="nav-button" data-link="TheBestNotes.html">Notes, but prettier</button>
+<button class="nav-button" data-link="TimeTable.html">Time Table: Because time has trust issues</button>
+
+</nav>
+</section>
+
+<section class="images-bottom">
+<article class="card image-card">
+<img src="https://i.postimg.cc/0yHcJ7D8/Screenshot-2569-04-06-at-19-51-56.png">
+</article>
+
+<article class="card image-card">
+<img src="https://i.postimg.cc/0yHcJ7Dk/Screenshot-2569-04-06-at-19-55-46.png">
+</article>
+
+<article class="card image-card">
+<img src="https://i.postimg.cc/g2BN638G/Screenshot-2569-04-06-at-21-07-48.png">
+</article>
+
+<article class="card image-card">
+<img src="https://i.postimg.cc/y8rvS0cH/Screenshot-2569-04-06-at-21-08-43.png">
+</article>
+</section>
+
+</main>
+
+<p class="footer-note">Planned by a human. Made with the help of AI</p>
+
+<script>
+const navButtons = document.querySelectorAll('.nav-button');
+
+navButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const targetLink = button.dataset.link;
+    window.location.href = targetLink;
+  });
+});
+</script>
+
+</body>
+</html>
+

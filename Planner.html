@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private Planner | PlanIt</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.84);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --danger: #da6f90;
+      --success: #5ba77a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 48%, #f6fff7 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1450px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 320px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .week-timer,
+    .planner-title {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .day-tab:hover,
+    .day-tab:focus-visible,
+    .event-card:hover {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .planner-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .planner-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .planner-title p,
+    .week-timer p,
+    .helper-text,
+    .event-meta,
+    .empty-state,
+    .small-note {
+      color: var(--text-soft);
+    }
+
+    .week-timer {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .countdown {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #3e5b87;
+      margin-top: 6px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #39517c;
+    }
+
+    .helper-text {
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 800;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      resize: vertical;
+    }
+
+    .field textarea {
+      min-height: 92px;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline-color: rgba(115, 136, 171, 0.24);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, var(--blue-2), var(--green-1));
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ffe0ea, #fff1f5);
+      color: #a14a69;
+    }
+
+    .week-strip {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .day-tab {
+      border: none;
+      padding: 14px 10px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.72), rgba(235, 248, 255, 0.94));
+      color: var(--text);
+      font-weight: 900;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .day-tab.active {
+      background: linear-gradient(135deg, var(--green-2), var(--blue-1));
+      box-shadow: 0 16px 34px rgba(124, 147, 184, 0.22);
+    }
+
+    .day-tab span {
+      display: block;
+      font-size: 0.82rem;
+      color: #667593;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .day-header h2 {
+      margin-bottom: 0;
+    }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .event-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .event-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .event-title {
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: #38517d;
+    }
+
+    .event-time {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink-1), var(--blue-1));
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #4a6489;
+    }
+
+    .event-description {
+      white-space: pre-wrap;
+      color: var(--text-soft);
+      margin: 10px 0 14px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.6);
+      font-weight: 700;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.62), rgba(216, 246, 222, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #39517b;
+      margin-bottom: 4px;
+    }
+
+    .small-note {
+      margin-top: 14px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1180px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .week-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell {
+        width: min(100% - 20px, 900px);
+      }
+
+      .stats-grid,
+      .week-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card planner-title">
+        <h1>Private Planner</h1>
+        <p>Your editable 7-day planning space inside PlanIt.</p>
+      </div>
+
+      <div class="card week-timer">
+        <p>Week reset countdown</p>
+        <div class="countdown" id="countdown">Loading...</div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-column">
+        <section class="card panel">
+          <h2>Add an Event</h2>
+          <p class="helper-text">You can add as many events as you want to any day during the current 7-day cycle. When the week ends, the planner resets automatically.</p>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="eventDay">Day</label>
+              <select id="eventDay"></select>
+            </div>
+
+            <div class="field">
+              <label for="eventTime">Time</label>
+              <input id="eventTime" type="time" />
+            </div>
+
+            <div class="field">
+              <label for="eventTitle">Event title</label>
+              <input id="eventTitle" type="text" placeholder="Example: Science revision" />
+            </div>
+
+            <div class="field">
+              <label for="eventLocation">Location / subject</label>
+              <input id="eventLocation" type="text" placeholder="Example: Math notebook / Library" />
+            </div>
+
+            <div class="field">
+              <label for="eventDescription">Notes</label>
+              <textarea id="eventDescription" placeholder="Add homework details, reminders, materials, or anything important."></textarea>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-btn" id="saveEventBtn">Save Event</button>
+            <button class="secondary-btn" id="resetFormBtn">Clear Form</button>
+            <button class="danger-btn" id="clearWeekBtn">Clear This Week</button>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h2>Planner Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="totalEvents">0</strong>
+              <span>Total events this week</span>
+            </div>
+            <div class="stat-box">
+              <strong id="busiestDay">None</strong>
+              <span>Busiest day</span>
+            </div>
+          </div>
+          <p class="small-note" id="weekRangeText">Current planner week: loading...</p>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section class="card panel">
+          <div class="week-strip" id="weekStrip"></div>
+
+          <div class="day-header">
+            <h2 id="selectedDayTitle">Today</h2>
+            <p class="helper-text" id="selectedDayDate"></p>
+          </div>
+
+          <div class="event-list" id="eventList"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_private_planner_data';
+    const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const eventDay = document.getElementById('eventDay');
+    const eventTime = document.getElementById('eventTime');
+    const eventTitle = document.getElementById('eventTitle');
+    const eventLocation = document.getElementById('eventLocation');
+    const eventDescription = document.getElementById('eventDescription');
+    const saveEventBtn = document.getElementById('saveEventBtn');
+    const resetFormBtn = document.getElementById('resetFormBtn');
+    const clearWeekBtn = document.getElementById('clearWeekBtn');
+    const eventList = document.getElementById('eventList');
+    const weekStrip = document.getElementById('weekStrip');
+    const countdown = document.getElementById('countdown');
+    const selectedDayTitle = document.getElementById('selectedDayTitle');
+    const selectedDayDate = document.getElementById('selectedDayDate');
+    const totalEvents = document.getElementById('totalEvents');
+    const busiestDay = document.getElementById('busiestDay');
+    const weekRangeText = document.getElementById('weekRangeText');
+
+    let plannerData = loadPlannerData();
+    let selectedDayIndex = new Date().getDay();
+
+    function getStartOfToday() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function createNewPlannerCycle() {
+      const startDate = getStartOfToday();
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 7);
+
+      return {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        events: {
+          0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: []
+        }
+      };
+    }
+
+    function loadPlannerData() {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!saved) {
+        const fresh = createNewPlannerCycle();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+        return fresh;
+      }
+      return saved;
+    }
+
+    function savePlannerData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(plannerData));
+    }
+
+    function checkForWeekReset() {
+      const now = new Date();
+      const endDate = new Date(plannerData.endDate);
+
+      if (now >= endDate) {
+        plannerData = createNewPlannerCycle();
+        savePlannerData();
+        selectedDayIndex = new Date().getDay();
+      }
+    }
+
+    function formatDate(date) {
+      return date.toLocaleDateString([], {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function formatFullDate(date) {
+      return date.toLocaleDateString([], {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function getDateForDayIndex(dayIndex) {
+      const startDate = new Date(plannerData.startDate);
+      const baseDay = startDate.getDay();
+      const difference = (dayIndex - baseDay + 7) % 7;
+      const result = new Date(startDate);
+      result.setDate(startDate.getDate() + difference);
+      return result;
+    }
+
+    function populateDaySelect() {
+      eventDay.innerHTML = DAY_NAMES.map((day, index) => {
+        const date = getDateForDayIndex(index);
+        return `<option value="${index}">${day} • ${formatDate(date)}</option>`;
+      }).join('');
+      eventDay.value = String(selectedDayIndex);
+    }
+
+    function renderWeekStrip() {
+      weekStrip.innerHTML = DAY_NAMES.map((day, index) => {
+        const date = getDateForDayIndex(index);
+        const count = plannerData.events[index]?.length || 0;
+        return `
+          <button class="day-tab ${index === selectedDayIndex ? 'active' : ''}" data-day="${index}">
+            ${day}
+            <span>${formatDate(date)} • ${count} event${count === 1 ? '' : 's'}</span>
+          </button>
+        `;
+      }).join('');
+
+      weekStrip.querySelectorAll('.day-tab').forEach((button) => {
+        button.addEventListener('click', () => {
+          selectedDayIndex = Number(button.dataset.day);
+          eventDay.value = String(selectedDayIndex);
+          renderWeekStrip();
+          renderSelectedDay();
+        });
+      });
+    }
+
+    function renderSelectedDay() {
+      const date = getDateForDayIndex(selectedDayIndex);
+      const events = [...(plannerData.events[selectedDayIndex] || [])].sort((a, b) => a.time.localeCompare(b.time));
+
+      selectedDayTitle.textContent = DAY_NAMES[selectedDayIndex];
+      selectedDayDate.textContent = formatFullDate(date);
+
+      if (!events.length) {
+        eventList.innerHTML = '<div class="empty-state">No events for this day yet. Add one from the left panel.</div>';
+        return;
+      }
+
+      eventList.innerHTML = events.map((event) => `
+        <article class="event-card">
+          <div class="event-top">
+            <div>
+              <div class="event-title">${escapeHtml(event.title)}</div>
+              <div class="event-meta">${escapeHtml(event.location || 'No location / subject added')}</div>
+            </div>
+            <div class="event-time">${escapeHtml(event.time || 'No time')}</div>
+          </div>
+          <div class="event-description">${escapeHtml(event.description || 'No notes added.')}</div>
+          <div class="button-row">
+            <button class="secondary-btn" onclick="editEvent('${event.id}', ${selectedDayIndex})">Edit</button>
+            <button class="danger-btn" onclick="deleteEvent('${event.id}', ${selectedDayIndex})">Delete</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function updateCountdown() {
+      checkForWeekReset();
+      const now = new Date();
+      const endDate = new Date(plannerData.endDate);
+      const diff = endDate - now;
+
+      if (diff <= 0) {
+        countdown.textContent = 'Resetting...';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      countdown.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function updateStats() {
+      const counts = DAY_NAMES.map((_, index) => (plannerData.events[index] || []).length);
+      const total = counts.reduce((sum, count) => sum + count, 0);
+      const maxCount = Math.max(...counts);
+      const busyIndex = counts.indexOf(maxCount);
+
+      totalEvents.textContent = String(total);
+      busiestDay.textContent = maxCount === 0 ? 'None' : `${DAY_NAMES[busyIndex]} (${maxCount})`;
+
+      const startDate = new Date(plannerData.startDate);
+      const endDate = new Date(plannerData.endDate);
+      const displayEnd = new Date(endDate);
+      displayEnd.setDate(displayEnd.getDate() - 1);
+      weekRangeText.textContent = `Current planner week: ${formatFullDate(startDate)} to ${formatFullDate(displayEnd)}`;
+    }
+
+    function clearForm() {
+      eventTitle.value = '';
+      eventTime.value = '';
+      eventLocation.value = '';
+      eventDescription.value = '';
+      eventDay.value = String(selectedDayIndex);
+      saveEventBtn.textContent = 'Save Event';
+      delete saveEventBtn.dataset.editId;
+      delete saveEventBtn.dataset.editDay;
+    }
+
+    function saveEvent() {
+      const dayIndex = Number(eventDay.value);
+      const title = eventTitle.value.trim();
+      const time = eventTime.value.trim();
+      const location = eventLocation.value.trim();
+      const description = eventDescription.value.trim();
+
+      if (!title || !time) {
+        alert('Please add at least an event title and time.');
+        return;
+      }
+
+      const editingId = saveEventBtn.dataset.editId;
+      const editingDay = saveEventBtn.dataset.editDay;
+
+      if (editingId && editingDay !== undefined) {
+        const oldDayIndex = Number(editingDay);
+        plannerData.events[oldDayIndex] = (plannerData.events[oldDayIndex] || []).filter((event) => event.id !== editingId);
+      }
+
+      const newEvent = {
+        id: editingId || crypto.randomUUID(),
+        title,
+        time,
+        location,
+        description
+      };
+
+      plannerData.events[dayIndex].push(newEvent);
+      savePlannerData();
+      selectedDayIndex = dayIndex;
+      clearForm();
+      renderAll();
+    }
+
+    function editEvent(eventId, dayIndex) {
+      const event = (plannerData.events[dayIndex] || []).find((item) => item.id === eventId);
+      if (!event) return;
+
+      selectedDayIndex = dayIndex;
+      eventDay.value = String(dayIndex);
+      eventTitle.value = event.title;
+      eventTime.value = event.time;
+      eventLocation.value = event.location || '';
+      eventDescription.value = event.description || '';
+      saveEventBtn.textContent = 'Update Event';
+      saveEventBtn.dataset.editId = event.id;
+      saveEventBtn.dataset.editDay = String(dayIndex);
+      renderWeekStrip();
+      renderSelectedDay();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteEvent(eventId, dayIndex) {
+      const confirmed = confirm('Delete this event?');
+      if (!confirmed) return;
+
+      plannerData.events[dayIndex] = (plannerData.events[dayIndex] || []).filter((event) => event.id !== eventId);
+      savePlannerData();
+      renderAll();
+    }
+
+    function clearWeek() {
+      const confirmed = confirm('This will remove all events from the current 7-day planner. Continue?');
+      if (!confirmed) return;
+
+      plannerData.events = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+      savePlannerData();
+      clearForm();
+      renderAll();
+    }
+
+    function renderAll() {
+      checkForWeekReset();
+      populateDaySelect();
+      renderWeekStrip();
+      renderSelectedDay();
+      updateStats();
+      updateCountdown();
+    }
+
+    saveEventBtn.addEventListener('click', saveEvent);
+    resetFormBtn.addEventListener('click', clearForm);
+    clearWeekBtn.addEventListener('click', clearWeek);
+    eventDay.addEventListener('change', () => {
+      selectedDayIndex = Number(eventDay.value);
+      renderWeekStrip();
+      renderSelectedDay();
+    });
+
+    window.editEvent = editEvent;
+    window.deleteEvent = deleteEvent;
+
+    renderAll();
+    setInterval(() => {
+      updateCountdown();
+      checkForWeekReset();
+      renderWeekStrip();
+      renderSelectedDay();
+      updateStats();
+    }, 1000);
+  </script>
+</body>
+</html>

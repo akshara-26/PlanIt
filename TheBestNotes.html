@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png"> 
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlanIt Notebooks</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.84);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --danger: #da6f90;
+      --success: #58a978;
+      --gold: #f3c86d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 48%, #f6fff7 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1520px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 340px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .page-title,
+    .book-limit-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .page-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .page-title p,
+    .book-limit-card p,
+    .helper-text,
+    .small-note,
+    .field label,
+    .book-meta,
+    .page-meta,
+    .empty-state,
+    .detail-note,
+    .cover-subtext {
+      color: var(--text-soft);
+    }
+
+    .book-limit-card {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .book-count {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #3f5b87;
+      margin-top: 6px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #39517c;
+    }
+
+    .helper-text,
+    .small-note,
+    .detail-note {
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      resize: vertical;
+    }
+
+    .field textarea {
+      min-height: 120px;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline-color: rgba(115, 136, 171, 0.24);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .book-card:hover,
+    .page-card:hover {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, var(--blue-2), var(--green-1));
+    }
+
+    .success-btn {
+      background: linear-gradient(135deg, #dcf8e6, #edfdf3);
+      color: #2f7e53;
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ffe0ea, #fff1f5);
+      color: #a14a69;
+    }
+
+    .warning-btn {
+      background: linear-gradient(135deg, #fff1d8, #fff9ef);
+      color: #a36b20;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.62), rgba(216, 246, 222, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #39517b;
+      margin-bottom: 4px;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .book-card {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(115, 136, 171, 0.14);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .book-cover {
+      min-height: 240px;
+      padding: 22px 18px 18px;
+      position: relative;
+      color: white;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .book-cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.22), transparent 20%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12), transparent 18%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.18), transparent 22%),
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.18));
+      pointer-events: none;
+    }
+
+    .cover-top,
+    .cover-bottom {
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(3px);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .cover-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1.15;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.22);
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+
+    .cover-subtext {
+      color: rgba(255,255,255,0.86);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .book-card-footer {
+      background: rgba(255,255,255,0.9);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .book-meta {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .constellation {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      margin: 8px 0 14px;
+      z-index: 2;
+    }
+
+    .star-dot {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 10px rgba(255,255,255,0.6);
+    }
+
+    .star-line {
+      position: absolute;
+      height: 2px;
+      background: rgba(255,255,255,0.6);
+      transform-origin: left center;
+      box-shadow: 0 0 8px rgba(255,255,255,0.3);
+    }
+
+    .books-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .selected-book-panel {
+      min-height: 300px;
+    }
+
+    .selected-book-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .selected-book-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #38517d;
+    }
+
+    .pages-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .page-card {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .page-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .page-title {
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: #39517d;
+    }
+
+    .page-meta {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .page-notes {
+      white-space: pre-wrap;
+      color: var(--text-soft);
+      margin: 10px 0 16px;
+    }
+
+    .page-image {
+      max-width: 320px;
+      width: 100%;
+      border-radius: 18px;
+      display: block;
+      margin: 10px 0 16px;
+      box-shadow: 0 10px 22px rgba(124, 147, 184, 0.14);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.6);
+      font-weight: 700;
+    }
+
+    .scroll-area {
+      max-height: 740px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .scroll-area::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: rgba(115,136,171,0.22);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 1320px) {
+      .books-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 1160px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .books-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell {
+        width: min(100% - 20px, 900px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card page-title">
+        <h1>PlanIt Notebooks</h1>
+        <p>Create up to 15 subject books, choose constellation covers, and organize pages of notes for every topic.</p>
+      </div>
+
+      <div class="card book-limit-card">
+        <p>Books created</p>
+        <div class="book-count" id="bookCount">0 / 15</div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-column">
+        <section class="card panel">
+          <h2>Create or Edit a Subject Book</h2>
+          <p class="helper-text">Each notebook can have its own title, color, and constellation cover. You can change the cover style any time.</p>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="bookTitle">Subject title</label>
+              <input id="bookTitle" type="text" placeholder="Example: Biology, Math, Fitness, Literature" />
+            </div>
+
+            <div class="field">
+              <label for="bookColor">Cover color</label>
+              <select id="bookColor"></select>
+            </div>
+
+            <div class="field">
+              <label for="bookConstellation">Constellation</label>
+              <select id="bookConstellation"></select>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-btn" id="saveBookBtn">Save Book</button>
+            <button class="secondary-btn" id="resetBookFormBtn">Clear Form</button>
+            <button class="danger-btn" id="deleteAllBooksBtn">Delete All Books</button>
+          </div>
+          <p class="small-note">Maximum: 15 notebooks.</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Add a Page to the Selected Book</h2>
+          <p class="helper-text">Each book can contain topic pages. Add notes, information, and an optional image to each page.</p>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="pageTopic">Topic / page title</label>
+              <input id="pageTopic" type="text" placeholder="Example: Cells, Polygons, Chapter 1 Summary" />
+            </div>
+
+            <div class="field">
+              <label for="pageNotes">Notes / information</label>
+              <textarea id="pageNotes" placeholder="Write your notes here. You can revise and edit them any time."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="pageImage">Optional image</label>
+              <input id="pageImage" type="file" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="success-btn" id="savePageBtn">Save Page</button>
+            <button class="secondary-btn" id="resetPageFormBtn">Clear Page Form</button>
+          </div>
+          <p class="detail-note" id="selectedBookNote">Select a book first to add pages.</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Notebook Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="totalBooksStat">0</strong>
+              <span>Total books</span>
+            </div>
+            <div class="stat-box">
+              <strong id="totalPagesStat">0</strong>
+              <span>Total pages</span>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section class="card panel">
+          <div class="books-header">
+            <h2>Your Subject Books</h2>
+            <p class="small-note">Click a notebook to open it.</p>
+          </div>
+          <div class="scroll-area">
+            <div class="books-grid" id="booksGrid"></div>
+          </div>
+        </section>
+
+        <section class="card panel selected-book-panel">
+          <div id="selectedBookPanel"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_notebooks_data';
+    const MAX_BOOKS = 15;
+
+    const COLOR_OPTIONS = [
+      { name: 'Rose Pink', value: '#f48fb1' },
+      { name: 'Blush Pink', value: '#f6a5c0' },
+      { name: 'Coral Pink', value: '#ff8a80' },
+      { name: 'Peach Glow', value: '#ffb38a' },
+      { name: 'Sunset Orange', value: '#ff9f68' },
+      { name: 'Golden Honey', value: '#f3c86d' },
+      { name: 'Lemon Glow', value: '#f6dc7b' },
+      { name: 'Mint Green', value: '#91d7b7' },
+      { name: 'Sage Green', value: '#97c7a1' },
+      { name: 'Seafoam', value: '#7ed6c2' },
+      { name: 'Emerald Mist', value: '#63c7aa' },
+      { name: 'Sky Blue', value: '#7ec8ff' },
+      { name: 'Cloud Blue', value: '#91bfff' },
+      { name: 'Ocean Blue', value: '#6ba7ff' },
+      { name: 'Dusty Blue', value: '#7f9ccf' },
+      { name: 'Lavender', value: '#b39ddb' },
+      { name: 'Lilac Bloom', value: '#c8a2ff' },
+      { name: 'Periwinkle', value: '#9fa8ff' },
+      { name: 'Violet Dream', value: '#9c7bff' },
+      { name: 'Plum Night', value: '#7d6ac8' },
+      { name: 'Berry', value: '#b56ed8' },
+      { name: 'Mauve', value: '#c38fb1' },
+      { name: 'Soft Grey', value: '#9ea7b8' },
+      { name: 'Silver Blue', value: '#8da7c7' },
+      { name: 'Teal Glow', value: '#58c4c7' },
+      { name: 'Aqua', value: '#67d4f0' },
+      { name: 'Turquoise', value: '#5fd2c6' },
+      { name: 'Night Navy', value: '#546a9e' },
+      { name: 'Galaxy Indigo', value: '#5c62c7' },
+      { name: 'Cosmic Rose', value: '#d779a8' }
+    ];
+
+    const CONSTELLATIONS = [
+      'Andromeda','Antlia','Apus','Aquarius','Aquila','Ara','Aries','Auriga','Boötes','Caelum','Camelopardalis',
+      'Cancer','Canes Venatici','Canis Major','Canis Minor','Capricornus','Carina','Cassiopeia','Centaurus','Cepheus',
+      'Cetus','Chamaeleon','Circinus','Columba','Coma Berenices','Corona Australis','Corona Borealis','Corvus','Crater',
+      'Cygnus','Delphinus','Dorado','Draco','Equuleus','Eridanus','Fornax','Gemini','Grus','Hercules','Horologium',
+      'Hydra','Leo','Libra','Lyra'
+    ];
+
+    const bookTitle = document.getElementById('bookTitle');
+    const bookColor = document.getElementById('bookColor');
+    const bookConstellation = document.getElementById('bookConstellation');
+    const saveBookBtn = document.getElementById('saveBookBtn');
+    const resetBookFormBtn = document.getElementById('resetBookFormBtn');
+    const deleteAllBooksBtn = document.getElementById('deleteAllBooksBtn');
+
+    const pageTopic = document.getElementById('pageTopic');
+    const pageNotes = document.getElementById('pageNotes');
+    const pageImage = document.getElementById('pageImage');
+    const savePageBtn = document.getElementById('savePageBtn');
+    const resetPageFormBtn = document.getElementById('resetPageFormBtn');
+    const selectedBookNote = document.getElementById('selectedBookNote');
+
+    const booksGrid = document.getElementById('booksGrid');
+    const selectedBookPanel = document.getElementById('selectedBookPanel');
+    const bookCount = document.getElementById('bookCount');
+    const totalBooksStat = document.getElementById('totalBooksStat');
+    const totalPagesStat = document.getElementById('totalPagesStat');
+
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { books: [] };
+    let selectedBookId = null;
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function populateSelectors() {
+      bookColor.innerHTML = COLOR_OPTIONS.map((color) => `<option value="${color.value}">${color.name}</option>`).join('');
+      bookConstellation.innerHTML = CONSTELLATIONS.map((name) => `<option value="${name}">${name}</option>`).join('');
+    }
+
+    function getContrastTextColor(hex) {
+      const clean = hex.replace('#', '');
+      const r = parseInt(clean.substring(0, 2), 16);
+      const g = parseInt(clean.substring(2, 4), 16);
+      const b = parseInt(clean.substring(4, 6), 16);
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 150 ? '#24314f' : '#ffffff';
+    }
+
+    function hashSeed(text) {
+      return [...text].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    }
+
+    function getConstellationPoints(name) {
+      const seed = hashSeed(name);
+      const points = [];
+      for (let i = 0; i < 7; i++) {
+        const x = 12 + ((seed * (i + 3) * 17) % 76);
+        const y = 12 + ((seed * (i + 5) * 23) % 76);
+        points.push({ x, y });
+      }
+      return points;
+    }
+
+    function createConstellationMarkup(name) {
+      const points = getConstellationPoints(name);
+      const lines = [];
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        lines.push(`<div class="star-line" style="left:${p1.x}%; top:${p1.y}%; width:${length}%; transform: rotate(${angle}deg);"></div>`);
+      }
+      const stars = points.map((point) => `<div class="star-dot" style="left:${point.x}%; top:${point.y}%;"></div>`).join('');
+      return `${lines.join('')}${stars}`;
+    }
+
+    function updateStats() {
+      bookCount.textContent = `${appData.books.length} / ${MAX_BOOKS}`;
+      totalBooksStat.textContent = String(appData.books.length);
+      totalPagesStat.textContent = String(appData.books.reduce((sum, book) => sum + book.pages.length, 0));
+    }
+
+    function resetBookForm() {
+      bookTitle.value = '';
+      bookColor.selectedIndex = 0;
+      bookConstellation.selectedIndex = 0;
+      saveBookBtn.textContent = 'Save Book';
+      delete saveBookBtn.dataset.editId;
+    }
+
+    function resetPageForm() {
+      pageTopic.value = '';
+      pageNotes.value = '';
+      pageImage.value = '';
+      savePageBtn.textContent = 'Save Page';
+      delete savePageBtn.dataset.editId;
+      delete savePageBtn.dataset.editBookId;
+    }
+
+    function saveBook() {
+      const title = bookTitle.value.trim();
+      const color = bookColor.value;
+      const constellation = bookConstellation.value;
+      const editId = saveBookBtn.dataset.editId;
+
+      if (!title) {
+        alert('Please enter a subject title.');
+        return;
+      }
+
+      if (!editId && appData.books.length >= MAX_BOOKS) {
+        alert('You can only create up to 15 notebooks.');
+        return;
+      }
+
+      if (editId) {
+        const book = appData.books.find((item) => item.id === editId);
+        if (book) {
+          book.title = title;
+          book.color = color;
+          book.constellation = constellation;
+          selectedBookId = book.id;
+        }
+      } else {
+        const newBook = {
+          id: crypto.randomUUID(),
+          title,
+          color,
+          constellation,
+          createdAt: Date.now(),
+          pages: []
+        };
+        appData.books.unshift(newBook);
+        selectedBookId = newBook.id;
+      }
+
+      saveData();
+      resetBookForm();
+      renderAll();
+    }
+
+    function editBook(bookId) {
+      const book = appData.books.find((item) => item.id === bookId);
+      if (!book) return;
+      bookTitle.value = book.title;
+      bookColor.value = book.color;
+      bookConstellation.value = book.constellation;
+      saveBookBtn.textContent = 'Update Book';
+      saveBookBtn.dataset.editId = book.id;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteBook(bookId) {
+      const confirmed = confirm('Delete this notebook and all its pages?');
+      if (!confirmed) return;
+      appData.books = appData.books.filter((book) => book.id !== bookId);
+      if (selectedBookId === bookId) selectedBookId = appData.books[0]?.id || null;
+      saveData();
+      renderAll();
+    }
+
+    function selectBook(bookId) {
+      selectedBookId = bookId;
+      renderAll();
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) {
+          resolve('');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function savePage() {
+      if (!selectedBookId) {
+        alert('Please select a notebook first.');
+        return;
+      }
+
+      const book = appData.books.find((item) => item.id === selectedBookId);
+      if (!book) return;
+
+      const topic = pageTopic.value.trim();
+      const notes = pageNotes.value.trim();
+      const file = pageImage.files[0];
+      const editId = savePageBtn.dataset.editId;
+      const editBookId = savePageBtn.dataset.editBookId;
+
+      if (!topic) {
+        alert('Please enter a topic or page title.');
+        return;
+      }
+
+      try {
+        const image = file ? await readFileAsDataURL(file) : null;
+
+        if (editId && editBookId === selectedBookId) {
+          const page = book.pages.find((item) => item.id === editId);
+          if (page) {
+            page.topic = topic;
+            page.notes = notes;
+            if (image) page.image = image;
+          }
+        } else {
+          book.pages.unshift({
+            id: crypto.randomUUID(),
+            topic,
+            notes,
+            image: image || '',
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          });
+        }
+
+        saveData();
+        resetPageForm();
+        renderAll();
+      } catch (error) {
+        alert('That image could not be added in this demo.');
+      }
+    }
+
+    function editPage(bookId, pageId) {
+      const book = appData.books.find((item) => item.id === bookId);
+      if (!book) return;
+      const page = book.pages.find((item) => item.id === pageId);
+      if (!page) return;
+      selectedBookId = bookId;
+      pageTopic.value = page.topic;
+      pageNotes.value = page.notes || '';
+      savePageBtn.textContent = 'Update Page';
+      savePageBtn.dataset.editId = page.id;
+      savePageBtn.dataset.editBookId = book.id;
+      renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deletePage(bookId, pageId) {
+      const confirmed = confirm('Delete this page?');
+      if (!confirmed) return;
+      const book = appData.books.find((item) => item.id === bookId);
+      if (!book) return;
+      book.pages = book.pages.filter((page) => page.id !== pageId);
+      saveData();
+      renderAll();
+    }
+
+    function deleteAllBooks() {
+      const confirmed = confirm('Delete all notebooks and all their pages?');
+      if (!confirmed) return;
+      appData.books = [];
+      selectedBookId = null;
+      saveData();
+      resetBookForm();
+      resetPageForm();
+      renderAll();
+    }
+
+    function renderBooksGrid() {
+      if (!appData.books.length) {
+        booksGrid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">No notebooks yet. Create your first subject book from the left panel.</div>';
+        return;
+      }
+
+      booksGrid.innerHTML = appData.books.map((book) => {
+        const textColor = getContrastTextColor(book.color);
+        return `
+          <article class="book-card" onclick="selectBook('${book.id}')" style="box-shadow:${selectedBookId === book.id ? '0 18px 36px rgba(124,147,184,0.22)' : 'var(--shadow)'};">
+            <div class="book-cover" style="background: linear-gradient(180deg, ${book.color}, #28314d); color:${textColor};">
+              <div class="cover-top">
+                <span class="cover-badge">PlanIt Notebook</span>
+              </div>
+              <div class="constellation">${createConstellationMarkup(book.constellation)}</div>
+              <div class="cover-bottom">
+                <div class="cover-title">${escapeHtml(book.title)}</div>
+                <div class="cover-subtext">${escapeHtml(book.constellation)} constellation</div>
+              </div>
+            </div>
+            <div class="book-card-footer">
+              <span class="book-meta">${book.pages.length} page${book.pages.length === 1 ? '' : 's'}</span>
+              <div class="button-row" style="margin:0;">
+                <button class="secondary-btn" onclick="event.stopPropagation(); editBook('${book.id}')">Edit</button>
+                <button class="danger-btn" onclick="event.stopPropagation(); deleteBook('${book.id}')">Delete</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderSelectedBook() {
+      if (!appData.books.length) {
+        selectedBookPanel.innerHTML = '<div class="empty-state">No book is open yet.</div>';
+        selectedBookNote.textContent = 'Select a book first to add pages.';
+        return;
+      }
+
+      const book = appData.books.find((item) => item.id === selectedBookId) || appData.books[0];
+      if (!book) return;
+      selectedBookId = book.id;
+      selectedBookNote.textContent = `Adding pages to: ${book.title}`;
+
+      selectedBookPanel.innerHTML = `
+        <div class="selected-book-top">
+          <div>
+            <div class="selected-book-title">${escapeHtml(book.title)}</div>
+            <p class="detail-note">${escapeHtml(book.constellation)} • ${book.pages.length} page${book.pages.length === 1 ? '' : 's'}</p>
+          </div>
+          <div class="button-row" style="margin:0;">
+            <button class="secondary-btn" onclick="editBook('${book.id}')">Edit Cover</button>
+          </div>
+        </div>
+        <p class="detail-note">Use this notebook to organize topics, revise later, and keep all your subject notes in one place.</p>
+        <div class="pages-list">
+          ${book.pages.length ? book.pages.map((page) => `
+            <article class="page-card">
+              <div class="page-top">
+                <div>
+                  <div class="page-title">${escapeHtml(page.topic)}</div>
+                  <div class="page-meta">Saved page</div>
+                </div>
+              </div>
+              <div class="page-notes">${escapeHtml(page.notes || 'No notes added.')}</div>
+              ${page.image ? `<img class="page-image" src="${page.image}" alt="Notebook page image" />` : ''}
+              <div class="button-row">
+                <button class="secondary-btn" onclick="editPage('${book.id}', '${page.id}')">Edit Page</button>
+                <button class="danger-btn" onclick="deletePage('${book.id}', '${page.id}')">Delete Page</button>
+              </div>
+            </article>
+          `).join('') : '<div class="empty-state">This notebook has no pages yet. Add one from the left panel.</div>'}
+        </div>
+      `;
+    }
+
+    function renderAll() {
+      updateStats();
+      renderBooksGrid();
+      renderSelectedBook();
+    }
+
+    saveBookBtn.addEventListener('click', saveBook);
+    resetBookFormBtn.addEventListener('click', resetBookForm);
+    deleteAllBooksBtn.addEventListener('click', deleteAllBooks);
+    savePageBtn.addEventListener('click', savePage);
+    resetPageFormBtn.addEventListener('click', resetPageForm);
+
+    window.selectBook = selectBook;
+    window.editBook = editBook;
+    window.deleteBook = deleteBook;
+    window.editPage = editPage;
+    window.deletePage = deletePage;
+
+    populateSelectors();
+    selectedBookId = appData.books[0]?.id || null;
+    renderAll();
+  </script>
+</body>
+</html>

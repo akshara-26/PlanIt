@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png"> 
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomme Mindfulness | PlanIt</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.84);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --red-apple: #ff6f7d;
+      --red-apple-dark: #e14b5b;
+      --green-apple: #8dd67b;
+      --green-apple-dark: #5bb85d;
+      --chalkboard: #37554a;
+      --chalk-text: #f7fff9;
+      --yellow: #ffe79a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 48%, #f6fff7 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1500px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 320px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .page-title,
+    .session-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .page-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .page-title p,
+    .session-card p,
+    .helper-text,
+    .small-note,
+    .breathing-desc,
+    .exercise-instructions,
+    .panel label,
+    .exercise-card p,
+    .stat-box span {
+      color: var(--text-soft);
+    }
+
+    .session-card {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .session-count {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #3f5b87;
+      margin-top: 6px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #39517c;
+    }
+
+    .helper-text,
+    .small-note {
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+    }
+
+    .timer-settings {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field select {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline-color: rgba(115, 136, 171, 0.24);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .exercise-card:hover,
+    .apple-card:hover {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, var(--blue-2), var(--green-1));
+    }
+
+    .success-btn {
+      background: linear-gradient(135deg, #dcf8e6, #edfdf3);
+      color: #2f7e53;
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ffe0ea, #fff1f5);
+      color: #a14a69;
+    }
+
+    .apple-zone {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .apple-card {
+      padding: 20px 18px 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .apple-label {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #3c547f;
+      margin-bottom: 14px;
+    }
+
+    .apple {
+      position: relative;
+      width: 190px;
+      height: 210px;
+      margin: 0 auto 18px;
+    }
+
+    .apple-body {
+      position: absolute;
+      left: 50%;
+      top: 24px;
+      transform: translateX(-50%);
+      width: 170px;
+      height: 150px;
+      border-radius: 42% 42% 46% 46% / 40% 40% 58% 58%;
+      box-shadow: inset 0 -10px 0 rgba(255,255,255,0.18);
+    }
+
+    .red .apple-body {
+      background: linear-gradient(180deg, var(--red-apple), var(--red-apple-dark));
+    }
+
+    .green .apple-body {
+      background: linear-gradient(180deg, var(--green-apple), var(--green-apple-dark));
+    }
+
+    .apple-body::before,
+    .apple-body::after {
+      content: "";
+      position: absolute;
+      top: -6px;
+      width: 72px;
+      height: 70px;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    .apple-body::before {
+      left: 10px;
+    }
+
+    .apple-body::after {
+      right: 10px;
+    }
+
+    .stem {
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      width: 14px;
+      height: 34px;
+      background: #7d5e38;
+      border-radius: 10px;
+      transform: translateX(-50%) rotate(8deg);
+      z-index: 2;
+    }
+
+    .leaf {
+      position: absolute;
+      top: 8px;
+      left: 56%;
+      width: 42px;
+      height: 20px;
+      background: #74c96f;
+      border-radius: 0 18px 18px 18px;
+      transform: rotate(-20deg);
+      z-index: 2;
+    }
+
+    .face {
+      position: absolute;
+      z-index: 3;
+      top: 78px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 96px;
+      height: 42px;
+    }
+
+    .eye {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #2f3552;
+      border-radius: 50%;
+      top: 6px;
+    }
+
+    .eye.left { left: 18px; }
+    .eye.right { right: 18px; }
+
+    .eye::after {
+      content: "";
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+      top: 2px;
+      left: 2px;
+    }
+
+    .smile {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 38px;
+      height: 18px;
+      border-bottom: 4px solid #2f3552;
+      border-radius: 0 0 30px 30px;
+      transform: translateX(-50%);
+    }
+
+    .arm {
+      position: absolute;
+      top: 108px;
+      width: 54px;
+      height: 8px;
+      background: #866449;
+      border-radius: 10px;
+      z-index: 2;
+    }
+
+    .arm.left {
+      left: -8px;
+      transform: rotate(18deg);
+    }
+
+    .arm.right {
+      right: -8px;
+      transform: rotate(-18deg);
+    }
+
+    .leg {
+      position: absolute;
+      bottom: -6px;
+      width: 10px;
+      height: 34px;
+      background: #866449;
+      border-radius: 10px;
+      z-index: 2;
+    }
+
+    .leg.left { left: 66px; }
+    .leg.right { right: 66px; }
+
+    .shoe {
+      position: absolute;
+      bottom: -10px;
+      width: 24px;
+      height: 10px;
+      background: #314267;
+      border-radius: 12px;
+    }
+
+    .shoe.left { left: 58px; }
+    .shoe.right { right: 58px; }
+
+    .chalkboard {
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      top: 116px;
+      transform: translateX(-50%);
+      width: 118px;
+      min-height: 76px;
+      background: var(--chalkboard);
+      border: 6px solid #d5b686;
+      border-radius: 16px;
+      color: var(--chalk-text);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 8px;
+      box-shadow: 0 8px 20px rgba(49, 66, 103, 0.16);
+    }
+
+    .board-title {
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      color: #ddfff0;
+    }
+
+    .board-main {
+      font-size: 1.2rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .board-subtext {
+      font-size: 0.78rem;
+      line-height: 1.25;
+      margin-top: 4px;
+      color: #fefee9;
+    }
+
+    .motivation-strip {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,220,233,0.52), rgba(235,248,255,0.82));
+      text-align: center;
+      font-weight: 800;
+      color: #486289;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .stat-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.62), rgba(216, 246, 222, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #39517b;
+      margin-bottom: 4px;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .exercise-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .exercise-card.active {
+      outline: 3px solid rgba(115, 136, 171, 0.2);
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(235,248,255,0.9));
+    }
+
+    .exercise-card h3 {
+      font-size: 1.05rem;
+      color: #39517d;
+    }
+
+    .exercise-visual-zone {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .exercise-display {
+      min-height: 220px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,220,233,0.5), rgba(235,248,255,0.85), rgba(216,246,222,0.75));
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .breathing-circle,
+    .planet-orbit,
+    .pulse-star,
+    .wave-ring,
+    .box-visual {
+      transition: all 1s ease-in-out;
+    }
+
+    .breathing-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #d4ebff 45%, #b7dafe 75%);
+      box-shadow: 0 0 0 14px rgba(255,255,255,0.24);
+    }
+
+    .breathing-circle.expand {
+      width: 180px;
+      height: 180px;
+    }
+
+    .planet-orbit {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      border: 3px dashed rgba(63, 91, 135, 0.3);
+    }
+
+    .planet-center {
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff1a5, #ffbe78 60%, #f4906c 100%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 25px rgba(255, 200, 120, 0.55);
+    }
+
+    .planet-dot {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f5ffff, #94cbff 75%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg) translateX(95px);
+      transform-origin: center center;
+      transition: transform 4s linear;
+      box-shadow: 0 0 15px rgba(148, 203, 255, 0.6);
+    }
+
+    .planet-orbit.move .planet-dot {
+      transform: translate(-50%, -50%) rotate(360deg) translateX(95px);
+    }
+
+    .box-visual {
+      width: 170px;
+      height: 170px;
+      border: 5px solid rgba(63, 91, 135, 0.26);
+      border-radius: 16px;
+      position: relative;
+    }
+
+    .box-dot {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff8ea5, #94cbff);
+      top: 0;
+      left: 0;
+      transition: all 1s ease-in-out;
+    }
+
+    .box-dot.step-1 { top: 0; left: 0; }
+    .box-dot.step-2 { top: 0; left: calc(100% - 22px); }
+    .box-dot.step-3 { top: calc(100% - 22px); left: calc(100% - 22px); }
+    .box-dot.step-4 { top: calc(100% - 22px); left: 0; }
+
+    .pulse-star {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #ffe79a, #ffb8b8, #b6ddff);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 93%, 50% 71%, 21% 93%, 32% 57%, 2% 35%, 39% 35%);
+      filter: drop-shadow(0 12px 18px rgba(49, 66, 103, 0.12));
+    }
+
+    .pulse-star.expand {
+      transform: scale(1.45);
+    }
+
+    .wave-ring {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 5px solid rgba(87, 153, 198, 0.4);
+    }
+
+    .wave-ring::before,
+    .wave-ring::after {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      border-radius: 50%;
+      border: 4px solid rgba(87, 153, 198, 0.22);
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .wave-ring.expand::before,
+    .wave-ring.expand::after {
+      opacity: 1;
+      transform: scale(1.18);
+    }
+
+    .exercise-side {
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .exercise-side h3 {
+      font-size: 1.1rem;
+      color: #39517c;
+      margin-bottom: 10px;
+    }
+
+    .exercise-status {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #466286;
+      margin-bottom: 10px;
+    }
+
+    .exercise-instructions {
+      font-size: 0.95rem;
+      min-height: 80px;
+    }
+
+    @media (max-width: 1200px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .top-bar,
+      .apple-zone,
+      .exercise-visual-zone,
+      .exercise-grid,
+      .timer-settings {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell {
+        width: min(100% - 20px, 900px);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .apple {
+        transform: scale(0.9);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card page-title">
+        <h1>Pomme Mindfulness</h1>
+        <p>Focus with two cheerful apples, then reset your mind with calming breathing exercises.</p>
+      </div>
+
+      <div class="card session-card">
+        <p>Completed focus sessions</p>
+        <div class="session-count" id="sessionCount">0</div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-column">
+        <section class="card panel">
+          <h2>Pomme Focus Timer</h2>
+          <p class="helper-text">Set your own study and break times. The red Pomme handles work time. The green Pomme handles break time.</p>
+
+          <div class="timer-settings">
+            <div class="field">
+              <label for="workMinutes">Work minutes</label>
+              <input id="workMinutes" type="number" min="1" max="180" value="25" />
+            </div>
+            <div class="field">
+              <label for="breakMinutes">Break minutes</label>
+              <input id="breakMinutes" type="number" min="1" max="60" value="5" />
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-btn" id="startWorkBtn">Start Work Timer</button>
+            <button class="success-btn" id="startBreakBtn">Start Break Timer</button>
+            <button class="secondary-btn" id="pauseTimerBtn">Pause</button>
+            <button class="danger-btn" id="resetTimerBtn">Reset</button>
+          </div>
+
+          <div class="apple-zone">
+            <article class="apple-card">
+              <div class="apple-label">Red Pomme • Work Timer</div>
+              <div class="apple red">
+                <div class="stem"></div>
+                <div class="leaf"></div>
+                <div class="apple-body"></div>
+                <div class="face">
+                  <div class="eye left"></div>
+                  <div class="eye right"></div>
+                  <div class="smile"></div>
+                </div>
+                <div class="arm left"></div>
+                <div class="arm right"></div>
+                <div class="leg left"></div>
+                <div class="leg right"></div>
+                <div class="shoe left"></div>
+                <div class="shoe right"></div>
+                <div class="chalkboard">
+                  <div class="board-title" id="redBoardTitle">Break Idea</div>
+                  <div class="board-main" id="redBoardMain">Stretch</div>
+                  <div class="board-subtext" id="redBoardSubtext">Loosen your shoulders.</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="apple-card">
+              <div class="apple-label">Green Pomme • Break Timer</div>
+              <div class="apple green">
+                <div class="stem"></div>
+                <div class="leaf"></div>
+                <div class="apple-body"></div>
+                <div class="face">
+                  <div class="eye left"></div>
+                  <div class="eye right"></div>
+                  <div class="smile"></div>
+                </div>
+                <div class="arm left"></div>
+                <div class="arm right"></div>
+                <div class="leg left"></div>
+                <div class="leg right"></div>
+                <div class="shoe left"></div>
+                <div class="shoe right"></div>
+                <div class="chalkboard">
+                  <div class="board-title" id="greenBoardTitle">Motivation</div>
+                  <div class="board-main" id="greenBoardMain">You’ve got this!</div>
+                  <div class="board-subtext" id="greenBoardSubtext">One focused step at a time.</div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="motivation-strip" id="modeStrip">Ready to begin. Choose a timer and let Pomme help you focus.</div>
+        </section>
+
+        <section class="card panel">
+          <h2>Focus Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="currentModeStat">Idle</strong>
+              <span>Current mode</span>
+            </div>
+            <div class="stat-box">
+              <strong id="timeLeftStat">25:00</strong>
+              <span>Time left</span>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section class="card panel">
+          <h2>Breathing Exercises</h2>
+          <p class="helper-text">Pick a calming method. Each exercise guides you with simple inhale, hold, and exhale prompts.</p>
+
+          <div class="exercise-grid" id="exerciseGrid">
+            <button class="exercise-card active" data-exercise="box">
+              <h3>Box Method</h3>
+              <p>Breathe in, hold, breathe out, hold — all in equal counts.</p>
+            </button>
+            <button class="exercise-card" data-exercise="circle">
+              <h3>Shrinking Circle</h3>
+              <p>Watch the circle grow and shrink while matching your breath.</p>
+            </button>
+            <button class="exercise-card" data-exercise="planet">
+              <h3>Planet Orbit</h3>
+              <p>Follow the little planet as it circles a glowing star.</p>
+            </button>
+            <button class="exercise-card" data-exercise="star">
+              <h3>Star Pulse</h3>
+              <p>Let a shining star expand and contract with your breathing.</p>
+            </button>
+            <button class="exercise-card" data-exercise="wave">
+              <h3>Wave Rings</h3>
+              <p>Slow down with soft ripples that pulse outward like calm waves.</p>
+            </button>
+          </div>
+
+          <div class="exercise-visual-zone">
+            <div class="exercise-display" id="exerciseDisplay">
+              <div class="box-visual" id="boxVisual">
+                <div class="box-dot step-1" id="boxDot"></div>
+              </div>
+              <div class="breathing-circle" id="circleVisual" style="display:none;"></div>
+              <div class="planet-orbit" id="planetVisual" style="display:none;">
+                <div class="planet-center"></div>
+                <div class="planet-dot"></div>
+              </div>
+              <div class="pulse-star" id="starVisual" style="display:none;"></div>
+              <div class="wave-ring" id="waveVisual" style="display:none;"></div>
+            </div>
+
+            <div class="exercise-side">
+              <h3 id="exerciseTitle">Box Method</h3>
+              <div class="exercise-status" id="exerciseStatus">Inhale • 4</div>
+              <p class="exercise-instructions" id="exerciseInstructions">Trace the square with your breath: inhale for 4, hold for 4, exhale for 4, hold for 4.</p>
+              <div class="button-row">
+                <button class="primary-btn" id="startBreathingBtn">Start Exercise</button>
+                <button class="secondary-btn" id="stopBreathingBtn">Stop</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_pomme_mindfulness_data';
+
+    const workMinutesInput = document.getElementById('workMinutes');
+    const breakMinutesInput = document.getElementById('breakMinutes');
+    const startWorkBtn = document.getElementById('startWorkBtn');
+    const startBreakBtn = document.getElementById('startBreakBtn');
+    const pauseTimerBtn = document.getElementById('pauseTimerBtn');
+    const resetTimerBtn = document.getElementById('resetTimerBtn');
+    const redBoardTitle = document.getElementById('redBoardTitle');
+    const redBoardMain = document.getElementById('redBoardMain');
+    const redBoardSubtext = document.getElementById('redBoardSubtext');
+    const greenBoardTitle = document.getElementById('greenBoardTitle');
+    const greenBoardMain = document.getElementById('greenBoardMain');
+    const greenBoardSubtext = document.getElementById('greenBoardSubtext');
+    const modeStrip = document.getElementById('modeStrip');
+    const currentModeStat = document.getElementById('currentModeStat');
+    const timeLeftStat = document.getElementById('timeLeftStat');
+    const sessionCount = document.getElementById('sessionCount');
+
+    const exerciseGrid = document.getElementById('exerciseGrid');
+    const exerciseTitle = document.getElementById('exerciseTitle');
+    const exerciseStatus = document.getElementById('exerciseStatus');
+    const exerciseInstructions = document.getElementById('exerciseInstructions');
+    const startBreathingBtn = document.getElementById('startBreathingBtn');
+    const stopBreathingBtn = document.getElementById('stopBreathingBtn');
+
+    const boxVisual = document.getElementById('boxVisual');
+    const boxDot = document.getElementById('boxDot');
+    const circleVisual = document.getElementById('circleVisual');
+    const planetVisual = document.getElementById('planetVisual');
+    const starVisual = document.getElementById('starVisual');
+    const waveVisual = document.getElementById('waveVisual');
+
+    const motivationMessages = [
+      ['You’ve got this!', 'One focused step at a time.'],
+      ['Tiny progress counts.', 'Keep going — it adds up.'],
+      ['Stay steady.', 'Your future self will thank you.'],
+      ['Focus mode on.', 'You are capable of hard things.'],
+      ['Keep blooming.', 'A little effort goes a long way.'],
+      ['One task first.', 'You do not need to do everything at once.']
+    ];
+
+    const breakIdeas = [
+      ['Stretch', 'Roll your shoulders and unclench your jaw.'],
+      ['Drink Water', 'Take a few slow sips and reset.'],
+      ['Snack Break', 'Grab something light and energizing.'],
+      ['Stand Up', 'Change your posture for a minute.'],
+      ['Look Outside', 'Rest your eyes on something distant.'],
+      ['Deep Breath', 'Take 3 calm breaths before returning.']
+    ];
+
+    const exerciseMap = {
+      box: {
+        title: 'Box Method',
+        instructions: 'Trace the square with your breath: inhale for 4, hold for 4, exhale for 4, hold for 4.',
+        phases: [
+          { text: 'Inhale • 4', action: () => boxDot.className = 'box-dot step-2' },
+          { text: 'Hold • 4', action: () => boxDot.className = 'box-dot step-2' },
+          { text: 'Exhale • 4', action: () => boxDot.className = 'box-dot step-3' },
+          { text: 'Hold • 4', action: () => boxDot.className = 'box-dot step-4' },
+          { text: 'Repeat', action: () => boxDot.className = 'box-dot step-1' }
+        ]
+      },
+      circle: {
+        title: 'Shrinking Circle',
+        instructions: 'Breathe in as the circle expands, then breathe out as it gently shrinks again.',
+        phases: [
+          { text: 'Inhale • Expand', action: () => circleVisual.classList.add('expand') },
+          { text: 'Hold • 2', action: () => circleVisual.classList.add('expand') },
+          { text: 'Exhale • Shrink', action: () => circleVisual.classList.remove('expand') },
+          { text: 'Rest • 2', action: () => circleVisual.classList.remove('expand') }
+        ]
+      },
+      planet: {
+        title: 'Planet Orbit',
+        instructions: 'Follow the little planet around the star. Inhale as it moves, exhale as it completes the circle.',
+        phases: [
+          { text: 'Inhale • Orbit begins', action: () => planetVisual.classList.add('move') },
+          { text: 'Exhale • Orbit completes', action: () => planetVisual.classList.remove('move') }
+        ]
+      },
+      star: {
+        title: 'Star Pulse',
+        instructions: 'Imagine your breath powering the star. Inhale as it glows wider, exhale as it softens.',
+        phases: [
+          { text: 'Inhale • Glow', action: () => starVisual.classList.add('expand') },
+          { text: 'Exhale • Soften', action: () => starVisual.classList.remove('expand') }
+        ]
+      },
+      wave: {
+        title: 'Wave Rings',
+        instructions: 'Let your breath move like water: inhale gently, then exhale longer as the rings ripple out.',
+        phases: [
+          { text: 'Inhale • Rise', action: () => waveVisual.classList.add('expand') },
+          { text: 'Exhale • Release', action: () => waveVisual.classList.remove('expand') }
+        ]
+      }
+    };
+
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { completedSessions: 0 };
+    let timerInterval = null;
+    let currentMode = 'idle';
+    let remainingSeconds = Number(workMinutesInput.value) * 60;
+    let breathingInterval = null;
+    let breathingPhaseIndex = 0;
+    let currentExercise = 'box';
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function randomFrom(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function updateAppleBoards() {
+      if (currentMode === 'work') {
+        const breakIdea = randomFrom(breakIdeas);
+        redBoardTitle.textContent = 'Break Idea';
+        redBoardMain.textContent = breakIdea[0];
+        redBoardSubtext.textContent = breakIdea[1];
+
+        greenBoardTitle.textContent = 'Work Timer';
+        greenBoardMain.textContent = formatTime(remainingSeconds);
+        greenBoardSubtext.textContent = 'Stay focused and steady.';
+
+        modeStrip.textContent = 'Work mode is active. Red Pomme is guiding your focus, and Green Pomme is cheering you on with the timer.';
+      } else if (currentMode === 'break') {
+        const motivation = randomFrom(motivationMessages);
+        greenBoardTitle.textContent = 'Motivation';
+        greenBoardMain.textContent = motivation[0];
+        greenBoardSubtext.textContent = motivation[1];
+
+        redBoardTitle.textContent = 'Break Timer';
+        redBoardMain.textContent = formatTime(remainingSeconds);
+        redBoardSubtext.textContent = 'Take your break gently.';
+
+        modeStrip.textContent = 'Break mode is active. Green Pomme is running the break, and Red Pomme is reminding you to rest properly.';
+      } else {
+        redBoardTitle.textContent = 'Break Idea';
+        redBoardMain.textContent = 'Stretch';
+        redBoardSubtext.textContent = 'Loosen your shoulders.';
+
+        greenBoardTitle.textContent = 'Motivation';
+        greenBoardMain.textContent = 'You’ve got this!';
+        greenBoardSubtext.textContent = 'One focused step at a time.';
+
+        modeStrip.textContent = 'Ready to begin. Choose a timer and let Pomme help you focus.';
+      }
+    }
+
+    function renderStats() {
+      sessionCount.textContent = String(appData.completedSessions || 0);
+      currentModeStat.textContent = currentMode === 'idle' ? 'Idle' : currentMode === 'work' ? 'Work' : 'Break';
+      timeLeftStat.textContent = formatTime(remainingSeconds);
+      updateAppleBoards();
+    }
+
+    function clearTimerInterval() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function startTimer(mode) {
+      clearTimerInterval();
+      currentMode = mode;
+      const minutes = mode === 'work' ? Number(workMinutesInput.value) : Number(breakMinutesInput.value);
+      remainingSeconds = Math.max(1, minutes) * 60;
+      renderStats();
+
+      timerInterval = setInterval(() => {
+        remainingSeconds -= 1;
+        renderStats();
+
+        if (remainingSeconds <= 0) {
+          clearTimerInterval();
+          if (currentMode === 'work') {
+            appData.completedSessions = (appData.completedSessions || 0) + 1;
+            saveData();
+            alert('Work session complete! Time for a break.');
+            startTimer('break');
+            return;
+          }
+
+          if (currentMode === 'break') {
+            currentMode = 'idle';
+            remainingSeconds = Number(workMinutesInput.value) * 60;
+            renderStats();
+            alert('Break finished. You can start another focus session whenever you are ready.');
+          }
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearTimerInterval();
+      modeStrip.textContent = 'Timer paused. Take a breath, then continue when ready.';
+    }
+
+    function resetTimer() {
+      clearTimerInterval();
+      currentMode = 'idle';
+      remainingSeconds = Number(workMinutesInput.value) * 60;
+      renderStats();
+    }
+
+    function stopBreathing() {
+      if (breathingInterval) {
+        clearInterval(breathingInterval);
+        breathingInterval = null;
+      }
+      exerciseStatus.textContent = 'Paused';
+    }
+
+    function showExerciseVisual(name) {
+      [boxVisual, circleVisual, planetVisual, starVisual, waveVisual].forEach((element) => {
+        element.style.display = 'none';
+      });
+
+      if (name === 'box') boxVisual.style.display = 'block';
+      if (name === 'circle') circleVisual.style.display = 'block';
+      if (name === 'planet') planetVisual.style.display = 'block';
+      if (name === 'star') starVisual.style.display = 'block';
+      if (name === 'wave') waveVisual.style.display = 'block';
+    }
+
+    function selectExercise(name) {
+      currentExercise = name;
+      const info = exerciseMap[name];
+      exerciseTitle.textContent = info.title;
+      exerciseInstructions.textContent = info.instructions;
+      exerciseStatus.textContent = 'Ready';
+      breathingPhaseIndex = 0;
+      stopBreathing();
+      showExerciseVisual(name);
+
+      document.querySelectorAll('.exercise-card').forEach((card) => {
+        card.classList.toggle('active', card.dataset.exercise === name);
+      });
+    }
+
+    function runBreathingPhase() {
+      const info = exerciseMap[currentExercise];
+      const phase = info.phases[breathingPhaseIndex % info.phases.length];
+      exerciseStatus.textContent = phase.text;
+      phase.action();
+      breathingPhaseIndex += 1;
+    }
+
+    function startBreathing() {
+      stopBreathing();
+      breathingPhaseIndex = 0;
+      runBreathingPhase();
+      breathingInterval = setInterval(runBreathingPhase, 4000);
+    }
+
+    startWorkBtn.addEventListener('click', () => startTimer('work'));
+    startBreakBtn.addEventListener('click', () => startTimer('break'));
+    pauseTimerBtn.addEventListener('click', pauseTimer);
+    resetTimerBtn.addEventListener('click', resetTimer);
+    startBreathingBtn.addEventListener('click', startBreathing);
+    stopBreathingBtn.addEventListener('click', stopBreathing);
+
+    exerciseGrid.querySelectorAll('.exercise-card').forEach((card) => {
+      card.addEventListener('click', () => selectExercise(card.dataset.exercise));
+    });
+
+    workMinutesInput.addEventListener('change', () => {
+      if (currentMode === 'idle') {
+        remainingSeconds = Number(workMinutesInput.value) * 60;
+        renderStats();
+      }
+    });
+
+    selectExercise('box');
+    resetTimer();
+    sessionCount.textContent = String(appData.completedSessions || 0);
+  </script>
+</body>
+</html>

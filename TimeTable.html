@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png"> 
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Schedule | PlanIt</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.86);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --grid-line: rgba(115, 136, 171, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 26%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 30%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 50%, #f6fff7 100%);
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .sky-decor {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255,255,255,0.58);
+      border-radius: 999px;
+      filter: blur(0.2px);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.32);
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: inherit;
+      border-radius: 999px;
+    }
+
+    .cloud::before { width: 48%; height: 120%; left: 10%; top: -35%; }
+    .cloud::after { width: 42%; height: 110%; right: 10%; top: -28%; }
+
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 12px rgba(255,255,255,0.85);
+    }
+
+    .planet {
+      position: absolute;
+      border-radius: 50%;
+      box-shadow: 0 0 24px rgba(255,255,255,0.18);
+      opacity: 0.9;
+    }
+
+    .planet.ringed::after {
+      content: "";
+      position: absolute;
+      inset: 42% -24%;
+      border: 3px solid rgba(255,255,255,0.45);
+      border-radius: 50%;
+      transform: rotate(-18deg);
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+      width: min(1600px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 36px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 280px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .page-title,
+    .status-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .page-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.7rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .page-title p,
+    .status-card p,
+    .helper-text,
+    .legend,
+    .small-note,
+    .schedule-tip,
+    .cell-time,
+    .toolbar label,
+    .toolbar input,
+    .toolbar select {
+      color: var(--text-soft);
+    }
+
+    .status-card {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .status-card strong {
+      font-size: 1.35rem;
+      color: #3f5b87;
+      margin-top: 6px;
+    }
+
+    .panel { padding: 22px; }
+
+    .panel h2 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: #39517c;
+    }
+
+    .helper-text,
+    .small-note,
+    .schedule-tip { margin-bottom: 14px; font-size: 0.95rem; }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 220px 220px 1fr auto auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .toolbar-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .toolbar label {
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: rgba(255,255,255,0.9);
+      font-size: 0.96rem;
+      outline: 2px solid transparent;
+      width: 100%;
+    }
+
+    .toolbar input:focus,
+    .toolbar select:focus { outline-color: rgba(115, 136, 171, 0.24); }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 13px 16px;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      align-self: end;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .schedule-cell:hover,
+    .legend-chip:hover {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .primary-btn { background: linear-gradient(135deg, var(--pink-2), var(--blue-1)); }
+    .secondary-btn { background: linear-gradient(135deg, var(--blue-2), var(--green-1)); }
+    .danger-btn { background: linear-gradient(135deg, #ffe0ea, #fff1f5); color: #a14a69; }
+
+    .legend-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(115,136,171,0.12);
+      transition: transform 0.2s ease;
+    }
+
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(115,136,171,0.16);
+    }
+
+    .table-shell {
+      overflow: auto;
+      border-radius: 22px;
+      border: 1px solid rgba(115,136,171,0.12);
+      background: rgba(255,255,255,0.42);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 1380px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: linear-gradient(135deg, rgba(255,220,233,0.94), rgba(235,248,255,0.96));
+      color: #39517c;
+      font-size: 0.98rem;
+      font-weight: 900;
+      text-align: center;
+      padding: 14px 10px;
+      border-bottom: 1px solid var(--grid-line);
+    }
+
+    thead th:first-child {
+      left: 0;
+      z-index: 4;
+    }
+
+    tbody th {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 130px;
+      background: linear-gradient(135deg, rgba(214,239,255,0.94), rgba(238,253,242,0.94));
+      color: #3d5681;
+      font-size: 0.9rem;
+      font-weight: 900;
+      padding: 12px 10px;
+      border-right: 1px solid var(--grid-line);
+      border-bottom: 1px solid var(--grid-line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tbody td {
+      border-bottom: 1px solid var(--grid-line);
+      border-right: 1px solid var(--grid-line);
+      padding: 6px;
+      background: rgba(255,255,255,0.62);
+      min-width: 170px;
+      vertical-align: top;
+    }
+
+    .schedule-cell {
+      min-height: 66px;
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255,255,255,0.64);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .schedule-cell.has-content {
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
+    }
+
+    .schedule-cell.empty::after {
+      content: "+ Add";
+      position: absolute;
+      right: 10px;
+      bottom: 7px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: rgba(97, 112, 141, 0.52);
+    }
+
+    .cell-subject {
+      font-size: 0.92rem;
+      font-weight: 900;
+      color: #314267;
+      margin-bottom: 4px;
+    }
+
+    .cell-time {
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .cell-note {
+      font-size: 0.84rem;
+      color: #44516d;
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(49, 66, 103, 0.26);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 40;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-box {
+      width: min(620px, 100%);
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(233,247,255,0.92));
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-box h3 {
+      margin-bottom: 12px;
+      color: #39517c;
+      font-size: 1.25rem;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-field.full { grid-column: 1 / -1; }
+
+    .modal-field label {
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    .modal-field input,
+    .modal-field textarea,
+    .modal-field select {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.96rem;
+      outline: 2px solid transparent;
+      width: 100%;
+    }
+
+    .modal-field textarea { min-height: 100px; resize: vertical; }
+    .modal-field input:focus,
+    .modal-field textarea:focus,
+    .modal-field select:focus { outline-color: rgba(115, 136, 171, 0.24); }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 980px) {
+      .top-bar,
+      .toolbar,
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sky-decor" aria-hidden="true">
+    <div class="cloud" style="width:150px;height:46px;left:4%;top:8%;"></div>
+    <div class="cloud" style="width:180px;height:56px;left:72%;top:9%;"></div>
+    <div class="cloud" style="width:120px;height:38px;left:84%;top:29%;"></div>
+    <div class="cloud" style="width:160px;height:48px;left:11%;top:34%;"></div>
+    <div class="cloud" style="width:130px;height:42px;left:60%;top:58%;"></div>
+
+    <div class="planet" style="width:46px;height:46px;left:88%;top:14%;background:radial-gradient(circle at 30% 30%, #fff5a9, #ffc4a2 70%, #e4979a 100%);"></div>
+    <div class="planet ringed" style="width:62px;height:62px;left:7%;top:62%;background:radial-gradient(circle at 35% 35%, #dcf1ff, #96bfff 72%, #7f87d8 100%);"></div>
+    <div class="planet" style="width:28px;height:28px;left:76%;top:74%;background:radial-gradient(circle at 35% 35%, #e2ffd5, #a2efae 74%, #79c98c 100%);"></div>
+
+    <div class="star" style="left:15%;top:14%;"></div>
+    <div class="star" style="left:27%;top:9%;"></div>
+    <div class="star" style="left:39%;top:17%;"></div>
+    <div class="star" style="left:54%;top:11%;"></div>
+    <div class="star" style="left:67%;top:19%;"></div>
+    <div class="star" style="left:79%;top:10%;"></div>
+    <div class="star" style="left:91%;top:23%;"></div>
+    <div class="star" style="left:8%;top:47%;"></div>
+    <div class="star" style="left:22%;top:63%;"></div>
+    <div class="star" style="left:36%;top:72%;"></div>
+    <div class="star" style="left:51%;top:67%;"></div>
+    <div class="star" style="left:69%;top:60%;"></div>
+    <div class="star" style="left:82%;top:48%;"></div>
+  </div>
+
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card page-title">
+        <h1>School Schedule</h1>
+        <p>A full weekly timetable with Monday to Sunday and 24 hours in each day — soft skies, clouds, stars, and planets included.</p>
+      </div>
+
+      <div class="card status-card">
+        <p>Filled schedule blocks</p>
+        <strong id="filledCount">0</strong>
+      </div>
+    </header>
+
+    <section class="card panel">
+      <h2>Schedule Controls</h2>
+      <p class="helper-text">Click any schedule cell to add or edit a subject. Everything stays saved in your browser until you change or clear it.</p>
+
+      <div class="toolbar">
+        <div class="toolbar-field">
+          <label for="subjectQuick">Quick subject name</label>
+          <input id="subjectQuick" type="text" placeholder="Example: Math, Biology, English" />
+        </div>
+
+        <div class="toolbar-field">
+          <label for="colorQuick">Subject colour</label>
+          <select id="colorQuick"></select>
+        </div>
+
+        <div class="toolbar-field">
+          <label>Tip</label>
+          <div class="schedule-tip">Use the same colour for the same subject all week to make your timetable easier to read.</div>
+        </div>
+
+        <button class="secondary-btn" id="fillSelectedBtn">Use Quick Fill</button>
+        <button class="danger-btn" id="clearAllBtn">Clear Entire Schedule</button>
+      </div>
+
+      <div class="legend-wrap" id="legendWrap"></div>
+
+      <div class="table-shell">
+        <table aria-label="School schedule timetable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+              <th>Saturday</th>
+              <th>Sunday</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+      </div>
+      <p class="small-note">Each row represents one full hour, from 12:00 AM to 11:59 PM.</p>
+    </section>
+  </div>
+
+  <div class="modal" id="cellModal" aria-hidden="true">
+    <div class="modal-box">
+      <h3 id="modalTitle">Edit Schedule Block</h3>
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label for="modalDay">Day</label>
+          <input id="modalDay" type="text" readonly />
+        </div>
+        <div class="modal-field">
+          <label for="modalHour">Hour</label>
+          <input id="modalHour" type="text" readonly />
+        </div>
+        <div class="modal-field">
+          <label for="modalSubject">Subject</label>
+          <input id="modalSubject" type="text" placeholder="Example: Chemistry" />
+        </div>
+        <div class="modal-field">
+          <label for="modalColor">Colour</label>
+          <select id="modalColor"></select>
+        </div>
+        <div class="modal-field full">
+          <label for="modalTime">Displayed time</label>
+          <input id="modalTime" type="text" placeholder="Example: 8:00 AM - 8:45 AM" />
+        </div>
+        <div class="modal-field full">
+          <label for="modalNote">Extra note</label>
+          <textarea id="modalNote" placeholder="Example: Lab, test prep, double period, bring calculator..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="primary-btn" id="saveCellBtn">Save Block</button>
+        <button class="secondary-btn" id="closeModalBtn">Close</button>
+        <button class="danger-btn" id="deleteCellBtn">Delete Block</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_school_schedule_data';
+    const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const SUBJECT_COLORS = [
+      ['Rose Pink', '#f8bfd2'],
+      ['Sky Blue', '#bfe3ff'],
+      ['Mint Green', '#ccefd8'],
+      ['Lavender', '#dccffc'],
+      ['Peach', '#ffd7c2'],
+      ['Soft Yellow', '#fff0b8'],
+      ['Coral', '#ffc0b0'],
+      ['Aqua', '#b8f0ee'],
+      ['Lilac', '#e2d7ff'],
+      ['Cloud Grey', '#e8edf8']
+    ];
+
+    const scheduleBody = document.getElementById('scheduleBody');
+    const filledCount = document.getElementById('filledCount');
+    const legendWrap = document.getElementById('legendWrap');
+    const colorQuick = document.getElementById('colorQuick');
+    const subjectQuick = document.getElementById('subjectQuick');
+    const fillSelectedBtn = document.getElementById('fillSelectedBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+
+    const cellModal = document.getElementById('cellModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDay = document.getElementById('modalDay');
+    const modalHour = document.getElementById('modalHour');
+    const modalSubject = document.getElementById('modalSubject');
+    const modalColor = document.getElementById('modalColor');
+    const modalTime = document.getElementById('modalTime');
+    const modalNote = document.getElementById('modalNote');
+    const saveCellBtn = document.getElementById('saveCellBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const deleteCellBtn = document.getElementById('deleteCellBtn');
+
+    let scheduleData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let activeCellKey = null;
+    let selectedCellKey = null;
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scheduleData));
+    }
+
+    function formatHour(hour) {
+      const startHour = hour % 12 === 0 ? 12 : hour % 12;
+      const startSuffix = hour < 12 ? 'AM' : 'PM';
+      const endMinuteText = '11:59';
+      return `${startHour}:00 ${startSuffix} - ${startHour}:${endMinuteText.split(':')[1]} ${startSuffix}`;
+    }
+
+    function getHourLabel(hour) {
+      const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+      const suffix = hour < 12 ? 'AM' : 'PM';
+      return `${displayHour}:00 ${suffix}`;
+    }
+
+    function makeKey(day, hour) {
+      return `${day}__${hour}`;
+    }
+
+    function populateColorSelects() {
+      const options = SUBJECT_COLORS.map(([name, hex]) => `<option value="${hex}">${name}</option>`).join('');
+      colorQuick.innerHTML = options;
+      modalColor.innerHTML = options;
+    }
+
+    function renderLegend() {
+      legendWrap.innerHTML = SUBJECT_COLORS.map(([name, hex]) => `
+        <div class="legend-chip">
+          <span class="legend-dot" style="background:${hex};"></span>
+          <span class="legend">${name}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderTable() {
+      let filled = 0;
+      scheduleBody.innerHTML = Array.from({ length: 24 }, (_, hour) => {
+        const cells = DAYS.map((day) => {
+          const key = makeKey(day, hour);
+          const data = scheduleData[key];
+          if (data) filled += 1;
+          const background = data ? data.color : 'rgba(255,255,255,0.64)';
+          return `
+            <td>
+              <div class="schedule-cell ${data ? 'has-content' : 'empty'}" data-day="${day}" data-hour="${hour}" style="background:${background}; ${selectedCellKey === key ? 'outline:2px solid rgba(49,66,103,0.18);' : ''}">
+                ${data ? `
+                  <div class="cell-subject">${escapeHtml(data.subject)}</div>
+                  <div class="cell-time">${escapeHtml(data.time || formatHour(hour))}</div>
+                  <div class="cell-note">${escapeHtml(data.note || '')}</div>
+                ` : ''}
+              </div>
+            </td>
+          `;
+        }).join('');
+
+        return `
+          <tr>
+            <th>${getHourLabel(hour)}</th>
+            ${cells}
+          </tr>
+        `;
+      }).join('');
+
+      filledCount.textContent = String(filled);
+
+      document.querySelectorAll('.schedule-cell').forEach((cell) => {
+        cell.addEventListener('click', () => openModal(cell.dataset.day, Number(cell.dataset.hour)));
+      });
+    }
+
+    function openModal(day, hour) {
+      activeCellKey = makeKey(day, hour);
+      selectedCellKey = activeCellKey;
+      const existing = scheduleData[activeCellKey] || null;
+
+      modalTitle.textContent = `Edit ${day} • ${getHourLabel(hour)}`;
+      modalDay.value = day;
+      modalHour.value = getHourLabel(hour);
+      modalSubject.value = existing?.subject || subjectQuick.value || '';
+      modalColor.value = existing?.color || colorQuick.value;
+      modalTime.value = existing?.time || formatHour(hour);
+      modalNote.value = existing?.note || '';
+
+      cellModal.classList.add('show');
+      cellModal.setAttribute('aria-hidden', 'false');
+      renderTable();
+    }
+
+    function closeModal() {
+      cellModal.classList.remove('show');
+      cellModal.setAttribute('aria-hidden', 'true');
+      activeCellKey = null;
+    }
+
+    function saveCell() {
+      if (!activeCellKey) return;
+      const subject = modalSubject.value.trim();
+      if (!subject) {
+        alert('Please enter a subject name.');
+        return;
+      }
+
+      scheduleData[activeCellKey] = {
+        subject,
+        color: modalColor.value,
+        time: modalTime.value.trim(),
+        note: modalNote.value.trim()
+      };
+      saveData();
+      renderTable();
+      closeModal();
+    }
+
+    function deleteCell() {
+      if (!activeCellKey) return;
+      delete scheduleData[activeCellKey];
+      saveData();
+      renderTable();
+      closeModal();
+    }
+
+    function clearAll() {
+      const confirmed = confirm('Clear the entire school schedule?');
+      if (!confirmed) return;
+      scheduleData = {};
+      selectedCellKey = null;
+      saveData();
+      renderTable();
+    }
+
+    function quickFillSelected() {
+      if (!selectedCellKey) {
+        alert('Click a schedule block first, then use Quick Fill.');
+        return;
+      }
+      const quickSubject = subjectQuick.value.trim();
+      if (!quickSubject) {
+        alert('Enter a quick subject name first.');
+        return;
+      }
+      const [, hourText] = selectedCellKey.split('__');
+      scheduleData[selectedCellKey] = {
+        subject: quickSubject,
+        color: colorQuick.value,
+        time: formatHour(Number(hourText)),
+        note: ''
+      };
+      saveData();
+      renderTable();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    fillSelectedBtn.addEventListener('click', quickFillSelected);
+    clearAllBtn.addEventListener('click', clearAll);
+    saveCellBtn.addEventListener('click', saveCell);
+    closeModalBtn.addEventListener('click', closeModal);
+    deleteCellBtn.addEventListener('click', deleteCell);
+
+    cellModal.addEventListener('click', (event) => {
+      if (event.target === cellModal) closeModal();
+    });
+
+    populateColorSelects();
+    renderLegend();
+    renderTable();
+  </script>
+</body>
+</html>

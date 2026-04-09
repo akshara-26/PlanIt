@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goals | PlanIt</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.84);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --danger: #da6f90;
+      --success: #58a978;
+      --warning: #f3b05f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 48%, #f6fff7 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1450px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 330px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .page-title,
+    .daily-check-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .page-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .page-title p,
+    .daily-check-card p,
+    .helper-text,
+    .goal-note,
+    .empty-state,
+    .tiny-note,
+    .goal-stats span {
+      color: var(--text-soft);
+    }
+
+    .daily-check-card {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .today-date {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #3f5b87;
+      margin-top: 6px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #39517c;
+    }
+
+    .helper-text {
+      margin-bottom: 16px;
+      font-size: 0.96rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 800;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      resize: vertical;
+    }
+
+    .field textarea {
+      min-height: 100px;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline-color: rgba(115, 136, 171, 0.24);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .goal-card:hover {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, var(--blue-2), var(--green-1));
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #ffe0ea, #fff1f5);
+      color: #a14a69;
+    }
+
+    .success-btn {
+      background: linear-gradient(135deg, #dcf8e6, #edfdf3);
+      color: #2f7e53;
+    }
+
+    .warning-btn {
+      background: linear-gradient(135deg, #fff0da, #fff9ef);
+      color: #a36b20;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.62), rgba(216, 246, 222, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #39517b;
+      margin-bottom: 4px;
+    }
+
+    .goals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .goal-card {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .goal-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .goal-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #38517d;
+    }
+
+    .goal-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink-1), var(--blue-1));
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #4a6489;
+    }
+
+    .goal-note {
+      white-space: pre-wrap;
+      margin-bottom: 14px;
+    }
+
+    .goal-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .goal-stats span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .goal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.6);
+      font-weight: 700;
+    }
+
+    .tiny-note {
+      margin-top: 14px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1180px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell {
+        width: min(100% - 20px, 900px);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card page-title">
+        <h1>Goals</h1>
+        <p>Set personal goals, check in every day, and keep your progress saved.</p>
+      </div>
+
+      <div class="card daily-check-card">
+        <p>Daily goal check-in</p>
+        <div class="today-date" id="todayDate">Loading...</div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-column">
+        <section class="card panel">
+          <h2>Add a Goal</h2>
+          <p class="helper-text">Create a personal goal and answer each day whether you accomplished it or not. All goals save in your browser until you delete them.</p>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="goalTitle">Goal title</label>
+              <input id="goalTitle" type="text" placeholder="Example: Study math for 30 minutes" />
+            </div>
+
+            <div class="field">
+              <label for="goalCategory">Category</label>
+              <select id="goalCategory">
+                <option value="Study">Study</option>
+                <option value="Health">Health</option>
+                <option value="Routine">Routine</option>
+                <option value="Reading">Reading</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="goalNote">Notes</label>
+              <textarea id="goalNote" placeholder="Add extra details or a reminder for this goal."></textarea>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-btn" id="saveGoalBtn">Save Goal</button>
+            <button class="secondary-btn" id="resetGoalFormBtn">Clear Form</button>
+            <button class="danger-btn" id="clearAllGoalsBtn">Delete All Goals</button>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <h2>Goal Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="totalGoals">0</strong>
+              <span>Total goals</span>
+            </div>
+            <div class="stat-box">
+              <strong id="completedToday">0</strong>
+              <span>Completed today</span>
+            </div>
+          </div>
+          <p class="tiny-note">Every goal keeps a daily history. Each new day asks again whether you accomplished it.</p>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section class="card panel">
+          <h2>Your Goals</h2>
+          <div class="goals-list" id="goalsList"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_goals_data';
+
+    const goalTitle = document.getElementById('goalTitle');
+    const goalCategory = document.getElementById('goalCategory');
+    const goalNote = document.getElementById('goalNote');
+    const saveGoalBtn = document.getElementById('saveGoalBtn');
+    const resetGoalFormBtn = document.getElementById('resetGoalFormBtn');
+    const clearAllGoalsBtn = document.getElementById('clearAllGoalsBtn');
+    const goalsList = document.getElementById('goalsList');
+    const totalGoals = document.getElementById('totalGoals');
+    const completedToday = document.getElementById('completedToday');
+    const todayDate = document.getElementById('todayDate');
+
+    let goals = loadGoals();
+
+    function getTodayKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getReadableDate() {
+      return new Date().toLocaleDateString([], {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function loadGoals() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    function saveGoals() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function clearForm() {
+      goalTitle.value = '';
+      goalCategory.value = 'Study';
+      goalNote.value = '';
+      saveGoalBtn.textContent = 'Save Goal';
+      delete saveGoalBtn.dataset.editId;
+    }
+
+    function createGoal() {
+      const title = goalTitle.value.trim();
+      const category = goalCategory.value;
+      const note = goalNote.value.trim();
+
+      if (!title) {
+        alert('Please add a goal title.');
+        return;
+      }
+
+      const editId = saveGoalBtn.dataset.editId;
+
+      if (editId) {
+        const existingGoal = goals.find((goal) => goal.id === editId);
+        if (existingGoal) {
+          existingGoal.title = title;
+          existingGoal.category = category;
+          existingGoal.note = note;
+        }
+      } else {
+        goals.unshift({
+          id: crypto.randomUUID(),
+          title,
+          category,
+          note,
+          createdAt: Date.now(),
+          dailyChecks: {}
+        });
+      }
+
+      saveGoals();
+      clearForm();
+      renderGoals();
+    }
+
+    function editGoal(goalId) {
+      const goal = goals.find((item) => item.id === goalId);
+      if (!goal) return;
+
+      goalTitle.value = goal.title;
+      goalCategory.value = goal.category;
+      goalNote.value = goal.note || '';
+      saveGoalBtn.textContent = 'Update Goal';
+      saveGoalBtn.dataset.editId = goal.id;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteGoal(goalId) {
+      const confirmed = confirm('Delete this goal?');
+      if (!confirmed) return;
+
+      goals = goals.filter((goal) => goal.id !== goalId);
+      saveGoals();
+      renderGoals();
+    }
+
+    function setDailyStatus(goalId, status) {
+      const today = getTodayKey();
+      const goal = goals.find((item) => item.id === goalId);
+      if (!goal) return;
+
+      goal.dailyChecks[today] = status;
+      saveGoals();
+      renderGoals();
+    }
+
+    function countCompletedDays(goal) {
+      return Object.values(goal.dailyChecks).filter((value) => value === 'yes').length;
+    }
+
+    function countMissedDays(goal) {
+      return Object.values(goal.dailyChecks).filter((value) => value === 'no').length;
+    }
+
+    function getTodayStatus(goal) {
+      const today = getTodayKey();
+      return goal.dailyChecks[today] || 'pending';
+    }
+
+    function renderGoals() {
+      todayDate.textContent = getReadableDate();
+      totalGoals.textContent = String(goals.length);
+      completedToday.textContent = String(goals.filter((goal) => getTodayStatus(goal) === 'yes').length);
+
+      if (!goals.length) {
+        goalsList.innerHTML = '<div class="empty-state">No goals yet. Add your first personal goal from the panel on the left.</div>';
+        return;
+      }
+
+      goalsList.innerHTML = goals.map((goal) => {
+        const todayStatus = getTodayStatus(goal);
+        const statusText = todayStatus === 'yes' ? 'Accomplished today' : todayStatus === 'no' ? 'Not done today' : 'Still waiting for today\'s answer';
+
+        return `
+          <article class="goal-card">
+            <div class="goal-top">
+              <div>
+                <div class="goal-title">${escapeHtml(goal.title)}</div>
+                <div class="goal-tag">${escapeHtml(goal.category)}</div>
+              </div>
+            </div>
+
+            <div class="goal-note">${escapeHtml(goal.note || 'No extra notes added.')}</div>
+
+            <div class="goal-stats">
+              <span>${statusText}</span>
+              <span>Yes count: ${countCompletedDays(goal)}</span>
+              <span>No count: ${countMissedDays(goal)}</span>
+            </div>
+
+            <div class="goal-actions">
+              <button class="success-btn" onclick="setDailyStatus('${goal.id}', 'yes')">Yes, I did it</button>
+              <button class="warning-btn" onclick="setDailyStatus('${goal.id}', 'no')">Not today</button>
+              <button class="secondary-btn" onclick="editGoal('${goal.id}')">Edit</button>
+              <button class="danger-btn" onclick="deleteGoal('${goal.id}')">Delete</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function clearAllGoals() {
+      const confirmed = confirm('Delete every saved goal?');
+      if (!confirmed) return;
+
+      goals = [];
+      saveGoals();
+      clearForm();
+      renderGoals();
+    }
+
+    saveGoalBtn.addEventListener('click', createGoal);
+    resetGoalFormBtn.addEventListener('click', clearForm);
+    clearAllGoalsBtn.addEventListener('click', clearAllGoals);
+
+    window.editGoal = editGoal;
+    window.deleteGoal = deleteGoal;
+    window.setDailyStatus = setDailyStatus;
+
+    renderGoals();
+  </script>
+</body>
+</html>

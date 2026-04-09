@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/tT5b3Xbp/Screenshot-2569-04-06-at-21-33-37.png"> 
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlanIt Garden</title>
+  <style>
+    :root {
+      --pink-1: #fff0f6;
+      --pink-2: #ffdce9;
+      --blue-1: #ebf8ff;
+      --blue-2: #d6efff;
+      --green-1: #eefdf2;
+      --green-2: #d8f6de;
+      --lavender: #f2ecff;
+      --text: #314267;
+      --text-soft: #61708d;
+      --white-glass: rgba(255, 255, 255, 0.84);
+      --border: 2px solid rgba(115, 136, 171, 0.14);
+      --shadow: 0 12px 30px rgba(124, 147, 184, 0.16);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --seed: #9b6b45;
+      --soil: #7b5b4a;
+      --sprout: #67b670;
+      --bud: #b373d1;
+      --star: #fff8d6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #fff5fa 0%, transparent 30%),
+        radial-gradient(circle at top right, #eef8ff 0%, transparent 34%),
+        linear-gradient(135deg, #fff9fc 0%, #f2fbff 48%, #f6fff7 100%);
+      line-height: 1.5;
+    }
+
+    .page-shell {
+      width: min(1540px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 22px 0 38px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 180px 1fr 320px;
+      gap: 18px;
+      margin-bottom: 22px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--white-glass);
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .home-button,
+    .page-title,
+    .garden-status {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .home-button {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--pink-2), var(--blue-1));
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .page-title {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.8), rgba(235, 248, 255, 0.95), rgba(216, 246, 222, 0.9));
+    }
+
+    .page-title h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      color: #344670;
+      margin-bottom: 6px;
+    }
+
+    .page-title p,
+    .garden-status p,
+    .helper-text,
+    .small-note,
+    .field label,
+    .plant-meta,
+    .stage-pill,
+    .empty-state,
+    .history-item,
+    .detail-text,
+    .bookish {
+      color: var(--text-soft);
+    }
+
+    .garden-status {
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, var(--blue-1), var(--green-1));
+    }
+
+    .garden-status strong {
+      font-size: 1.35rem;
+      color: #3f5b87;
+      margin-top: 6px;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .panel { padding: 24px; }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #39517c;
+    }
+
+    .helper-text,
+    .small-note { margin-bottom: 16px; font-size: 0.96rem; }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 0.98rem;
+      outline: 2px solid transparent;
+      resize: vertical;
+      width: 100%;
+    }
+
+    .field textarea { min-height: 110px; }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { outline-color: rgba(115, 136, 171, 0.24); }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-button:hover,
+    .home-button:focus-visible,
+    button:hover,
+    button:focus-visible,
+    .plant-card:hover,
+    .history-row:hover { transform: translateY(-3px); outline: none; }
+
+    .primary-btn { background: linear-gradient(135deg, var(--pink-2), var(--blue-1)); }
+    .secondary-btn { background: linear-gradient(135deg, var(--blue-2), var(--green-1)); }
+    .danger-btn { background: linear-gradient(135deg, #ffe0ea, #fff1f5); color: #a14a69; }
+    .success-btn { background: linear-gradient(135deg, #dcf8e6, #edfdf3); color: #2f7e53; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 220, 233, 0.62), rgba(216, 246, 222, 0.82));
+      border: 1px solid rgba(115, 136, 171, 0.12);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #39517b;
+      margin-bottom: 4px;
+    }
+
+    .garden-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .plant-card {
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .plant-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .plant-title {
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: #39517c;
+    }
+
+    .stage-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink-1), var(--blue-1));
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .plant-meta {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .garden-plot {
+      position: relative;
+      height: 240px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.8), transparent 24%),
+        radial-gradient(circle at 78% 16%, rgba(255,255,255,0.55), transparent 18%),
+        linear-gradient(180deg, #122548 0%, #2a4577 38%, #3d5d7f 58%, #8d745f 58%, #7c604f 100%);
+      overflow: hidden;
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      margin-bottom: 12px;
+    }
+
+    .tiny-star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255,255,255,0.6);
+    }
+
+    .soil-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 58%;
+      height: 2px;
+      background: rgba(255,255,255,0.14);
+    }
+
+    .plant-canvas {
+      position: absolute;
+      inset: 0;
+    }
+
+    .seed-shape,
+    .stem,
+    .leaf,
+    .bud,
+    .petal,
+    .core,
+    .halo,
+    .spark {
+      position: absolute;
+      transform-origin: center center;
+    }
+
+    .seed-shape {
+      width: 20px;
+      height: 28px;
+      background: linear-gradient(180deg, #b07a55, #7d5237);
+      border-radius: 50% 50% 55% 55%;
+      left: 50%;
+      top: 60%;
+      transform: translateX(-50%) rotate(16deg);
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.08);
+    }
+
+    .stem {
+      width: 8px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #79da84, #4c9d54);
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 42%;
+      box-shadow: 0 0 10px rgba(121,218,132,0.18);
+    }
+
+    .leaf {
+      width: 34px;
+      height: 18px;
+      border-radius: 0 18px 18px 18px;
+      background: linear-gradient(135deg, #9ff1aa, #5ac26f);
+      box-shadow: 0 0 10px rgba(144,244,170,0.16);
+    }
+
+    .bud {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff7ff, #d69cff 58%, #9871f5 100%);
+      box-shadow: 0 0 16px rgba(186, 123, 255, 0.4);
+    }
+
+    .petal {
+      width: 42px;
+      height: 68px;
+      border-radius: 50% 50% 45% 45%;
+      box-shadow: 0 0 16px rgba(255,255,255,0.18);
+      opacity: 0.95;
+    }
+
+    .core {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffffff, #ffe589 55%, #ffb97d 100%);
+      box-shadow: 0 0 16px rgba(255, 232, 140, 0.65);
+      left: 50%;
+      top: 34%;
+      transform: translate(-50%, -50%);
+    }
+
+    .halo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,255,255,0.35);
+      left: 50%;
+      top: 34%;
+      transform: translate(-50%, -50%) rotate(16deg);
+    }
+
+    .spark {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #cfe5ff 80%);
+      box-shadow: 0 0 14px rgba(255,255,255,0.72);
+    }
+
+    .plant-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mini-btn {
+      padding: 10px 13px;
+      font-size: 0.84rem;
+      border-radius: 14px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .history-row {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(115, 136, 171, 0.12);
+      transition: transform 0.2s ease;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.6);
+      font-weight: 700;
+    }
+
+    @media (max-width: 1280px) {
+      .garden-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 960px) {
+      .top-bar { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .garden-grid,
+      .stats-grid { grid-template-columns: 1fr; }
+      .page-shell { width: min(100% - 20px, 900px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-bar">
+      <a class="card home-button" href="Index.html">Home</a>
+
+      <div class="card page-title">
+        <h1>PlanIt Garden</h1>
+        <p>Turn study sessions into seeds, water them with every new thing you learn, and grow a galaxy garden full of star-flowers.</p>
+      </div>
+
+      <div class="card garden-status">
+        <p>Blooming plants</p>
+        <strong id="gardenCountText">0</strong>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="left-column">
+        <section class="card panel">
+          <h2>Log Something You Studied</h2>
+          <p class="helper-text">The first time you enter a subject, PlanIt Garden plants a random seed. Every later study log waters that same plant and helps it grow.</p>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="subjectInput">Subject</label>
+              <input id="subjectInput" type="text" placeholder="Example: Biology, Math, History" />
+            </div>
+
+            <div class="field">
+              <label for="topicInput">What did you learn?</label>
+              <input id="topicInput" type="text" placeholder="Example: Cells, Polygons, Ancient Rome" />
+            </div>
+
+            <div class="field">
+              <label for="notesInput">Optional note</label>
+              <textarea id="notesInput" placeholder="Add a quick note about what you studied today."></textarea>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-btn" id="logStudyBtn">Plant / Water Study</button>
+            <button class="secondary-btn" id="clearFormBtn">Clear Form</button>
+            <button class="danger-btn" id="clearGardenBtn">Clear Entire Garden</button>
+          </div>
+          <p class="small-note">If you do not log anything for 3 days in a row, each plant drops back by one stage.</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Garden Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong id="studyLogCount">0</strong>
+              <span>Total study logs</span>
+            </div>
+            <div class="stat-box">
+              <strong id="fullBloomCount">0</strong>
+              <span>Flowers in blossom</span>
+            </div>
+          </div>
+          <p class="small-note bookish" id="streakNote">Keep logging what you learn to help your star-flowers reach full bloom.</p>
+        </section>
+
+        <section class="card panel">
+          <h2>Recent Learning Logs</h2>
+          <div id="historyList" class="history-list"></div>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section class="card panel">
+          <h2>Your Galaxy Garden</h2>
+          <div id="gardenGrid" class="garden-grid"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'planit_garden_data';
+    const MAX_FLOWER_DESIGNS = 120;
+    const STAGES = ['seed', 'sprout', 'bud', 'blossom'];
+    const STAGE_THRESHOLDS = {
+      seed: 0,
+      sprout: 3,
+      bud: 8,
+      blossom: 14
+    };
+
+    const subjectInput = document.getElementById('subjectInput');
+    const topicInput = document.getElementById('topicInput');
+    const notesInput = document.getElementById('notesInput');
+    const logStudyBtn = document.getElementById('logStudyBtn');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+    const clearGardenBtn = document.getElementById('clearGardenBtn');
+    const gardenGrid = document.getElementById('gardenGrid');
+    const historyList = document.getElementById('historyList');
+    const gardenCountText = document.getElementById('gardenCountText');
+    const studyLogCount = document.getElementById('studyLogCount');
+    const fullBloomCount = document.getElementById('fullBloomCount');
+    const streakNote = document.getElementById('streakNote');
+
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+      plants: [],
+      logs: [],
+      lastGlobalLogDate: null,
+      lastPenaltyDate: null
+    };
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function getTodayKey() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function dateToObj(dateKey) {
+      return new Date(`${dateKey}T00:00:00`);
+    }
+
+    function daysBetween(a, b) {
+      const ms = 1000 * 60 * 60 * 24;
+      return Math.floor((dateToObj(b) - dateToObj(a)) / ms);
+    }
+
+    function normalizeSubject(subject) {
+      return subject.trim().toLowerCase();
+    }
+
+    function titleCase(text) {
+      return text
+        .trim()
+        .split(/\s+/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function randomFlowerDesignId() {
+      return Math.floor(Math.random() * MAX_FLOWER_DESIGNS) + 1;
+    }
+
+    function getStageFromWater(waterCount) {
+      if (waterCount >= STAGE_THRESHOLDS.blossom) return 'blossom';
+      if (waterCount >= STAGE_THRESHOLDS.bud) return 'bud';
+      if (waterCount >= STAGE_THRESHOLDS.sprout) return 'sprout';
+      return 'seed';
+    }
+
+    function stageIndex(stage) {
+      return STAGES.indexOf(stage);
+    }
+
+    function previousStage(stage) {
+      const index = stageIndex(stage);
+      return STAGES[Math.max(0, index - 1)];
+    }
+
+    function ensurePenaltyCheck() {
+      const today = getTodayKey();
+      if (!appData.lastGlobalLogDate) return;
+
+      const gap = daysBetween(appData.lastGlobalLogDate, today);
+      const alreadyPenalizedToday = appData.lastPenaltyDate === today;
+
+      if (gap >= 3 && !alreadyPenalizedToday) {
+        appData.plants.forEach((plant) => {
+          plant.stage = previousStage(plant.stage);
+          if (plant.stage === 'seed') {
+            plant.waterCount = Math.min(plant.waterCount, 2);
+          } else if (plant.stage === 'sprout') {
+            plant.waterCount = Math.min(Math.max(plant.waterCount, 3), 7);
+          } else if (plant.stage === 'bud') {
+            plant.waterCount = Math.min(Math.max(plant.waterCount, 8), 13);
+          }
+        });
+        appData.lastPenaltyDate = today;
+        streakNote.textContent = 'You missed 3 days, so each flower dropped back by one stage. Keep going — they can bloom again.';
+        saveData();
+      }
+    }
+
+    function clearForm() {
+      subjectInput.value = '';
+      topicInput.value = '';
+      notesInput.value = '';
+    }
+
+    function createPlant(subject) {
+      const subjectTitle = titleCase(subject);
+      return {
+        id: crypto.randomUUID(),
+        subjectKey: normalizeSubject(subject),
+        subjectTitle,
+        designId: randomFlowerDesignId(),
+        waterCount: 0,
+        stage: 'seed',
+        createdAt: getTodayKey(),
+        updatedAt: getTodayKey(),
+        lastTopic: '',
+        logs: []
+      };
+    }
+
+    function logStudy() {
+      ensurePenaltyCheck();
+
+      const subject = subjectInput.value.trim();
+      const topic = topicInput.value.trim();
+      const note = notesInput.value.trim();
+
+      if (!subject || !topic) {
+        alert('Please enter both a subject and what you studied.');
+        return;
+      }
+
+      let plant = appData.plants.find((item) => item.subjectKey === normalizeSubject(subject));
+      const today = getTodayKey();
+      let message = '';
+
+      if (!plant) {
+        plant = createPlant(subject);
+        plant.lastTopic = topic;
+        plant.logs.unshift({ date: today, topic, note });
+        appData.plants.unshift(plant);
+        message = `A new seed has been planted for ${plant.subjectTitle}.`;
+      } else {
+        plant.waterCount += 1;
+        plant.stage = getStageFromWater(plant.waterCount);
+        plant.updatedAt = today;
+        plant.lastTopic = topic;
+        plant.logs.unshift({ date: today, topic, note });
+        message = `${plant.subjectTitle} has been watered and is growing.`;
+      }
+
+      appData.logs.unshift({
+        id: crypto.randomUUID(),
+        date: today,
+        subject: titleCase(subject),
+        topic,
+        note
+      });
+
+      appData.lastGlobalLogDate = today;
+      saveData();
+      clearForm();
+      renderAll();
+      alert(message);
+    }
+
+    function deletePlant(plantId) {
+      const confirmed = confirm('Remove this plant from your garden?');
+      if (!confirmed) return;
+      appData.plants = appData.plants.filter((plant) => plant.id !== plantId);
+      saveData();
+      renderAll();
+    }
+
+    function getFlowerPalette(designId) {
+      const palettes = [
+        ['#ff9ec7', '#ffc7df', '#ffe894'],
+        ['#8cc9ff', '#d4e8ff', '#fff0a6'],
+        ['#b495ff', '#e2d1ff', '#ffd1f3'],
+        ['#7fe0c7', '#c3fff0', '#fff0b4'],
+        ['#ffae96', '#ffd0bf', '#fff1cc'],
+        ['#9cb0ff', '#d7ddff', '#ffd6a5'],
+        ['#f196ff', '#ffd0ff', '#fff1a9'],
+        ['#85f0ae', '#cffff0', '#ffe3a1']
+      ];
+      return palettes[designId % palettes.length];
+    }
+
+    function getPetalCount(designId) {
+      const counts = [6, 7, 8, 9, 10, 12];
+      return counts[designId % counts.length];
+    }
+
+    function getHalo(designId) {
+      return designId % 2 === 0;
+    }
+
+    function getSparkCount(designId) {
+      return 4 + (designId % 6);
+    }
+
+    function renderPlantVisual(plant) {
+      const palette = getFlowerPalette(plant.designId);
+      const petalCount = getPetalCount(plant.designId);
+      const sparkCount = getSparkCount(plant.designId);
+      const hasHalo = getHalo(plant.designId);
+
+      let html = '<div class="soil-line"></div>';
+      for (let i = 0; i < 8; i += 1) {
+        const x = (plant.designId * (i + 5) * 11) % 95;
+        const y = (plant.designId * (i + 2) * 7) % 44;
+        html += `<div class="tiny-star" style="left:${x}%; top:${y}%;"></div>`;
+      }
+
+      if (plant.stage === 'seed') {
+        html += '<div class="seed-shape"></div>';
+        return html;
+      }
+
+      const stemHeight = plant.stage === 'sprout' ? 62 : plant.stage === 'bud' ? 92 : 114;
+      html += `<div class="stem" style="height:${stemHeight}px;"></div>`;
+      html += '<div class="leaf" style="left:46%; bottom:42%; transform: rotate(-28deg);"></div>';
+      html += '<div class="leaf" style="left:50%; bottom:48%; transform: rotate(142deg);"></div>';
+
+      if (plant.stage === 'sprout') {
+        html += '<div class="bud" style="left:50%; top:42%; transform: translate(-50%, -50%) scale(0.7);"></div>';
+        return html;
+      }
+
+      if (plant.stage === 'bud') {
+        html += '<div class="bud" style="left:50%; top:37%; transform: translate(-50%, -50%) scale(1);"></div>';
+        html += '<div class="spark" style="left:42%; top:30%;"></div>';
+        html += '<div class="spark" style="left:58%; top:27%;"></div>';
+        return html;
+      }
+
+      for (let i = 0; i < petalCount; i += 1) {
+        const angle = (360 / petalCount) * i;
+        const color = palette[i % palette.length];
+        html += `<div class="petal" style="left:50%; top:34%; background: radial-gradient(circle at 35% 25%, #ffffff, ${color} 58%, rgba(80,60,130,0.9) 100%); transform: translate(-50%, -50%) rotate(${angle}deg) translateY(-34px);"></div>`;
+      }
+
+      html += '<div class="core"></div>';
+      if (hasHalo) html += '<div class="halo"></div>';
+      for (let i = 0; i < sparkCount; i += 1) {
+        const angle = (360 / sparkCount) * i;
+        const radius = 56 + (i % 2) * 12;
+        const x = 50 + Math.cos((angle * Math.PI) / 180) * (radius / 1.9);
+        const y = 34 + Math.sin((angle * Math.PI) / 180) * (radius / 2.2);
+        html += `<div class="spark" style="left:${x}%; top:${y}%; width:${6 + (i % 3)}px; height:${6 + (i % 3)}px;"></div>`;
+      }
+      return html;
+    }
+
+    function renderGarden() {
+      gardenCountText.textContent = String(appData.plants.length);
+      fullBloomCount.textContent = String(appData.plants.filter((plant) => plant.stage === 'blossom').length);
+      studyLogCount.textContent = String(appData.logs.length);
+
+      if (!appData.plants.length) {
+        gardenGrid.innerHTML = '<div class="empty-state" style="grid-column:1 / -1;">Your garden is empty. Log a subject you studied to plant your first seed.</div>';
+        return;
+      }
+
+      gardenGrid.innerHTML = appData.plants.map((plant) => `
+        <article class="plant-card">
+          <div class="plant-top">
+            <div class="plant-title">${escapeHtml(plant.subjectTitle)}</div>
+            <div class="stage-pill">${escapeHtml(plant.stage)}</div>
+          </div>
+          <div class="plant-meta">Flower design #${plant.designId} • Water: ${plant.waterCount} • Last topic: ${escapeHtml(plant.lastTopic || 'None yet')}</div>
+          <div class="garden-plot">
+            <div class="plant-canvas">${renderPlantVisual(plant)}</div>
+          </div>
+          <div class="plant-actions">
+            <button class="mini-btn secondary-btn" onclick="quickWater('${plant.subjectKey}')">Water Again</button>
+            <button class="mini-btn danger-btn" onclick="deletePlant('${plant.id}')">Remove</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderHistory() {
+      if (!appData.logs.length) {
+        historyList.innerHTML = '<div class="empty-state">No study logs yet.</div>';
+        return;
+      }
+
+      historyList.innerHTML = appData.logs.slice(0, 8).map((log) => `
+        <div class="history-row">
+          <strong>${escapeHtml(log.subject)}</strong> — ${escapeHtml(log.topic)}<br>
+          <span class="detail-text">${escapeHtml(log.date)}${log.note ? ` • ${escapeHtml(log.note)}` : ''}</span>
+        </div>
+      `).join('');
+    }
+
+    function quickWater(subjectKey) {
+      const plant = appData.plants.find((item) => item.subjectKey === subjectKey);
+      if (!plant) return;
+      const topic = prompt(`What new thing did you study for ${plant.subjectTitle}?`);
+      if (!topic || !topic.trim()) return;
+      subjectInput.value = plant.subjectTitle;
+      topicInput.value = topic.trim();
+      notesInput.value = '';
+      logStudy();
+    }
+
+    function clearGarden() {
+      const confirmed = confirm('Clear your entire PlanIt Garden?');
+      if (!confirmed) return;
+      appData = {
+        plants: [],
+        logs: [],
+        lastGlobalLogDate: null,
+        lastPenaltyDate: null
+      };
+      saveData();
+      renderAll();
+    }
+
+    function renderAll() {
+      ensurePenaltyCheck();
+      renderGarden();
+      renderHistory();
+    }
+
+    window.quickWater = quickWater;
+    window.deletePlant = deletePlant;
+
+    logStudyBtn.addEventListener('click', logStudy);
+    clearFormBtn.addEventListener('click', clearForm);
+    clearGardenBtn.addEventListener('click', clearGarden);
+
+    renderAll();
+  </script>
+</body>
+</html>
